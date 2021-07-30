@@ -1,0 +1,3 @@
+DEBUG   2021-07-30 23:43:05 [main] service.DataBaseService (DataBaseService.java:39) - CREATE TABLE  IF NOT EXISTS  Users (id       INTEGER PRIMARY KEY AUTOINCREMENT, Login    TEXT    UNIQUE NOT NULL, Password TEXT    NOT NULL, Nickname TEXT    NOT NULL); 
+ERROR   2021-07-30 23:43:05 [main] service.DataBaseService (DataBaseService.java:106) - Error of Autcommit or  prepareStatement :org.sqlite.SQLiteException: [SQLITE_CONSTRAINT_UNIQUE]  A UNIQUE constraint failed (UNIQUE constraint failed: Users.Login)
+DEBUG   2021-07-30 23:43:30 [main] service.DataBaseService (DataBaseService.java:39) - CREATE TABLE  IF NOT EXISTS  Users (id       INTEGER PRIMARY KEY AUTOINCREMENT, Login    TEXT    UNIQUE NOT NULL, Password TEXT    NOT NULL, Nickname TEXT    NOT NULL); 
