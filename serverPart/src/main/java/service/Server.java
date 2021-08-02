@@ -1,53 +1,75 @@
 package service;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Server {
     private final int PORT = 8899;
-    private static List<ClientHandler> clientList;
+    private static List<ClientByIdHandler> clientList;
     private AuthenticationService authService;
     private static ExecutorService executorService;
     private static final Logger LOGGER = LogManager.getLogger(Server.class.getName());
 
-    public Server() {
+    public void start()  {
 
         clientList = new ArrayList<>();
-        LOGGER.info("Server starting...");
-        authService = new AuthenticationService();
-        // executorService = Executors.newFixedThreadPool(70);//с ограничением одновременных пользователей/ Пандемия. больше 70 не собираемся.
-        executorService = Executors.newCachedThreadPool();//без огрничений
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+        NioEventLoopGroup bossGroup = new NioEventLoopGroup(5);
+        NioEventLoopGroup workerGroup = new NioEventLoopGroup();
 
-            LOGGER.info("Server ready.");
-            while (true) {
-                Socket socket = serverSocket.accept();
-                LOGGER.info("Client Connecting..");
-                new ClientHandler(this, socket);
-            }
-        } catch (IOException e) {
-           LOGGER.error("ServerSocket Error:" + e);
+        try {
+            ServerBootstrap server = new ServerBootstrap();
+            server
+                    .group(bossGroup, workerGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .childHandler(new ChannelInitializer<NioSocketChannel>() {
+                        @Override
+                        protected void initChannel(NioSocketChannel ch) throws Exception {
+
+                            ch.pipeline().addLast(new StringDecoder(), new StringEncoder(), new ServerDecoder()/*, new ObjectEncoder(), new ObjectDecoder(ClassResolvers.cacheDisabled(null))*/);
+
+                        }
+                    })
+                    .option(ChannelOption.SO_BACKLOG, 128)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true);
+
+            ChannelFuture channelFuture = server.bind(PORT).sync();
+            LOGGER.info("Server started!");
+            channelFuture.channel().closeFuture().sync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         } finally {
-            executorService.shutdown();
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
         }
+
+        authService = new AuthenticationService();
+
     }
 
 
-    static synchronized void subScribe(ClientHandler client) {
+    static synchronized void subScribe(ClientByIdHandler client) {
         clientList.add(client);
 
     }
 
-    static synchronized void unSubScribe(ClientHandler client) {
+    static synchronized void unSubScribe(ClientByIdHandler client) {
         clientList.remove(client);
         LOGGER.info(client.getName() + " disconnected");
 

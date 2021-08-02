@@ -1,5 +1,5 @@
 package service;
-/*приннимаем обьект и сохраняем егов фаил*/
+/*приннимаем обьект и сохраняем его в фаил*/
 
 import lib.FileObjectLibClass;
 
