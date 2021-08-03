@@ -1,8 +1,8 @@
 package Services;
 
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.serialization.ClassResolver;
 import lib.FileObjectLibClass;
 
 import java.io.FileNotFoundException;
@@ -12,7 +12,6 @@ import java.io.IOException;
 public class ObjectEncoder extends SimpleChannelInboundHandler<Object> {
 
 
-
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //   ctx.writeAndFlush( new FileObjectLibClass("CLIENT_FOLDER/txt.txt"));
@@ -20,8 +19,9 @@ public class ObjectEncoder extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-
-        //  FileObjectLibClass objectForTransfer = new FileObjectLibClass("CLIENT_FOLDER/txt.txt");
+          FileObjectLibClass objectForTransfer = new FileObjectLibClass("CLIENT_FOLDER/txt.txt");
+           ctx.writeAndFlush(objectForTransfer)
+                .addListener(ChannelFutureListener.CLOSE);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class ObjectEncoder extends SimpleChannelInboundHandler<Object> {
         saveAsFile(objectForTransfer);
     }
 
-
+    /*если прилетел фаил*/
     private static void saveAsFile(FileObjectLibClass filePrepare) throws FileNotFoundException {
         FileOutputStream fos = new FileOutputStream("res_" + filePrepare.getFileName());
         try {
@@ -43,4 +43,5 @@ public class ObjectEncoder extends SimpleChannelInboundHandler<Object> {
         }
 
     }
+
 }

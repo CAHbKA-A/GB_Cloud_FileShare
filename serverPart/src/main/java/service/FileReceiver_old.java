@@ -11,7 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 
-public class FileReceiver {
+public class FileReceiver_old {
 
 
     public static void start() throws IOException, ClassNotFoundException {

@@ -1,5 +1,6 @@
 package service;
 
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.serialization.ClassResolver;
@@ -16,20 +17,19 @@ public class ObjectDecoder extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-     //   ctx.writeAndFlush(new FileObjectLibClass("CLIENT_FOLDER/txt.txt"));
+           ctx.writeAndFlush(new FileObjectLibClass("CLIENT_FOLDER/txt.txt"));
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-
-        //  FileObjectLibClass objectForTransfer = new FileObjectLibClass("CLIENT_FOLDER/txt.txt");
-
+        FileObjectLibClass objectForTransfer = new FileObjectLibClass("CLIENT_FOLDER/txt.txt");
+        ctx.writeAndFlush(objectForTransfer)
+                .addListener(ChannelFutureListener.CLOSE);
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Object o) throws Exception {
-        FileObjectLibClass objectForTransfer = (FileObjectLibClass) o;
-        saveAsFile(objectForTransfer);
+
     }
 
 

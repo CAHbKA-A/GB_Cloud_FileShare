@@ -1,4 +1,4 @@
-package Services;
+package service;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 
 public class FileTreeCreator {
-    private String nameOfClent;
+
     private String scanPath;
     private long clientFolderSize; //пригодяится для быстрой сверки каталогов
     private long clientFolderHash; //может пригодится для быстрой сверки каталого, если размеры совпадут или переопределить has /equals
@@ -18,13 +18,20 @@ public class FileTreeCreator {
     /*список файлов, чтобы восстановить структуру каталогов*/
     private ArrayList<FileProperty> fileList;
 
+    public ArrayList<Path> getDirectoryList() {
+        return directoryList;
+    }
+
+    public ArrayList<FileProperty> getFileList() {
+        return fileList;
+    }
 
     public long getClientFolderSize() {
         return clientFolderSize;
     }
 
     public long getClientFolderHash() {
-        return totalFiles * clientFolderSize * 32;
+        return totalFiles*clientFolderSize*32;
     }
 
     public int getTotalFiles() {
@@ -66,8 +73,8 @@ public class FileTreeCreator {
 
     public FileTreeCreator(String scanPath) {
         this.scanPath = scanPath;
-        this.totalFiles = 0;
-        this.clientFolderSize = 0;
+        this.totalFiles =0;
+        this.clientFolderSize=0;
     }
 
     public void walkingTree() {
@@ -86,12 +93,12 @@ public class FileTreeCreator {
 
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                    //  System.out.println(file);
+                  //  System.out.println(file);
                     File fileА = new File(String.valueOf(file));
                     fileList.add(new FileProperty(fileА.getName(), file, fileА.length(), fileА.lastModified(), fileА.length() + fileА.lastModified()));
                     clientFolderSize += fileА.length(); //считаем размер всего каталога с файлами
                     totalFiles++; //считаем файлы
-                    //     System.out.println(fileА.length());
+                       //     System.out.println(fileА.length());
                     //  System.out.println(fileА.getName());
                     //  System.out.println(fileА.lastModified());
                     return FileVisitResult.CONTINUE;

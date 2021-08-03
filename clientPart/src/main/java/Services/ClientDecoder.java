@@ -13,16 +13,16 @@ public class ClientDecoder extends SimpleChannelInboundHandler<String> {
 
         if (msg.startsWith("/authorization success")){
             System.out.println("authorization complit");
-
         }
 
         if (msg.startsWith("/Lets_go!")){
-
-
             System.out.println("File  -- > Server");
             ctx.pipeline().remove(this);
-
             ctx.pipeline().addLast(new ObjectEncoder(), new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
+
+            /*туплю нем огу поянять как передать*/
+
+            /*после передачи вертаем пайплафны на место*/
 
             ctx.writeAndFlush("done!");
         }

@@ -1,4 +1,5 @@
 package service;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -24,10 +25,9 @@ public class Server {
     private final int PORT = 8899;
     private static List<ClientByIdHandler> clientList;
     private AuthenticationService authService;
-    private static ExecutorService executorService;
     private static final Logger LOGGER = LogManager.getLogger(Server.class.getName());
 
-    public void start()  {
+    public void start() {
 
         clientList = new ArrayList<>();
         NioEventLoopGroup bossGroup = new NioEventLoopGroup(5);
@@ -75,25 +75,5 @@ public class Server {
 
     }
 
-    public AuthenticationService getAuthService() {
-        return authService;
-    }
 
-//    public static boolean isAlreadyConnected(String nick) {
-//        for (ClientHandler clientHandler : clientList) {
-//            if (clientHandler.getName().equals(nick)) return true;
-//        }
-//        return false;
-//    }
-
-
-    public static String getTime() {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-        return format.format(Calendar.getInstance().getTime());
-    }
-
-
-    public void addThread(Thread ch) {
-        executorService.execute(ch);
-    }
 }

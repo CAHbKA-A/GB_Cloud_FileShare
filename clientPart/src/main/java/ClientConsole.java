@@ -35,9 +35,7 @@ public class ClientConsole {
         singIn("B", "B");
         clientFolder = "CLIENT_FOLDER";
         //обираем список фалов и хэш клиентской папки, если не задана. если задана то можно будет сохранить все настройки сервера в фаил и оттуда брать. пока по дефолту
-
         FolderTreeObject(clientFolder);
-
 
         //TODO и отправка на сервер. сначала хэша и размера дирректории, если изменилось, то переача списка фалов
 
@@ -51,7 +49,7 @@ public class ClientConsole {
         }
         /*передаем фаил*/
         sendMessage("/ready2transferFile");
-//тут пока затык
+        //тут пока затык
         // sendMessage();
 
     }
