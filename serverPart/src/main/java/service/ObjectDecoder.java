@@ -12,25 +12,27 @@ import java.io.IOException;
 
 public class ObjectDecoder extends SimpleChannelInboundHandler<Object> {
 
-    public ObjectDecoder(ClassResolver cacheDisabled) {
-    }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-           ctx.writeAndFlush(new FileObjectLibClass("CLIENT_FOLDER/txt.txt"));
-    }
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+        FileTreeCreator tree = (FileTreeCreator) msg;
+        System.out.println(tree+" received");
 
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-//        FileObjectLibClass objectForTransfer = new FileObjectLibClass("CLIENT_FOLDER/txt.txt");
-//        ctx.writeAndFlush(objectForTransfer)
-//                .addListener(ChannelFutureListener.CLOSE);
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Object o) throws Exception {
 
     }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        cause.printStackTrace();
+        ctx.channel().close();
+    }
+
+
+
 
 
     private static void saveAsFile(FileObjectLibClass filePrepare) throws FileNotFoundException {

@@ -58,6 +58,7 @@ public class ClientConsole {
             e.printStackTrace();
         }
         /*отправляем само дерев*///тут пока затык надо перестроить пайплайн
+        channelFuture.channel().pipeline().addFirst(new ObjectEncoder());
         channelFuture.channel().writeAndFlush(ClientFolderObj).sync();
 
         sendMessage("Done!");

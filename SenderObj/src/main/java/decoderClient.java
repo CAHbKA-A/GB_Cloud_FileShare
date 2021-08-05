@@ -11,7 +11,6 @@ public class DecoderClient extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        Cat cat = (Cat) msg;
-        System.out.println(cat+" received");
+
     }
 }

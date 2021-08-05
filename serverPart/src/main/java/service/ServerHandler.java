@@ -29,7 +29,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
             /*готовим приемник*/
             /*ТУТ Затык*/
             ctx.writeAndFlush("/Lets_go!");
-            ctx.pipeline().addFirst(new ObjectEncoder(), new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
+            ctx.pipeline().addFirst(new ObjectDecoder());
 
 
 
