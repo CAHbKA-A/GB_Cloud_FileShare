@@ -17,13 +17,13 @@ import java.util.List;
 
 public class Server {
     private final int PORT = 8899;
-    private static List<Client_old> clientList;
+  //  private static List<Client_old> clientList;
     private AuthenticationService authService;
     private static final Logger LOGGER = LogManager.getLogger(Server.class.getName());
 
     public void start() {
 
-        clientList = new ArrayList<>();
+ //       clientList = new ArrayList<>();
         NioEventLoopGroup bossGroup = new NioEventLoopGroup(5);
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
 
@@ -56,18 +56,18 @@ public class Server {
         authService = new AuthenticationService();
 
     }
-
-
-    static synchronized void subScribe(Client_old client) {
-        clientList.add(client);
-
-    }
-
-    static synchronized void unSubScribe(Client_old client) {
-        clientList.remove(client);
-        LOGGER.info(client.getName() + " disconnected");
-
-    }
+//
+//
+//    static synchronized void subScribe(Client_old client) {
+//        clientList.add(client);
+//
+//    }
+//
+//    static synchronized void unSubScribe(Client_old client) {
+//        clientList.remove(client);
+//        LOGGER.info(client.getName() + " disconnected");
+//
+//    }
 
 
 }

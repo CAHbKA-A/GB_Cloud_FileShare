@@ -12,6 +12,7 @@
         <module>clientPart</module>
         <module>serverPart</module>
         <module>lib</module>
+        <module>SenderObj</module>
     </modules>
 
     <properties>

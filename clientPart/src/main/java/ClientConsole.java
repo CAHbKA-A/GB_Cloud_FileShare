@@ -36,7 +36,7 @@ public class ClientConsole {
         singIn("B", "B");
         clientFolder = "CLIENT_FOLDER";
         //обираем список фалов и хэш клиентской папки, если не задана. если задана то можно будет сохранить все настройки сервера в фаил и оттуда брать. пока по дефолту
-        FileTreeCreator ClientFolderObj = FolderTreeObject(clientFolder);
+        FileTreeCreator ClientFolderObj = new  FileTreeCreator(clientFolder);
 
         //TODO и отправка на сервер. сначала хэша и размера дирректории, если изменилось, то переача списка фалов
 
@@ -57,7 +57,7 @@ public class ClientConsole {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        /*отправляем само дерев*///тут пока затык
+        /*отправляем само дерев*///тут пока затык надо перестроить пайплайн
         channelFuture.channel().writeAndFlush(ClientFolderObj).sync();
 
         sendMessage("Done!");
