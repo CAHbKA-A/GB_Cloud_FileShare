@@ -1,4 +1,6 @@
-package Services;
+package service;
+
+/*отправка обьектов*/
 
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -9,20 +11,26 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class ObjectEncoder extends SimpleChannelInboundHandler<Object> {
 
-
+public class ObjectEncoder_old extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        //   ctx.writeAndFlush( new FileObjectLibClass("CLIENT_FOLDER/txt.txt"));
 
+        //отправляем фаил
+        //ctx.writeAndFlush(new FileObjectLibClass("CLIENT_FOLDER/txt.txt"));
+        //отправка списка
+        FileObjectLibClass objectForTransfer = new FileObjectLibClass("CLIENT_FOLDER/txt.txt");
+        ctx.writeAndFlush(objectForTransfer)
+                .addListener(ChannelFutureListener.CLOSE);
     }
 
+ /*когдапринимаем, фаил сохраняем  в папку. список принимать не будем.*/
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object o) throws Exception {
-//        FileObjectLibClass objectForTransfer = (FileObjectLibClass) o;
-//        saveAsFile(objectForTransfer);
+
+        FileObjectLibClass objectForTransfer = (FileObjectLibClass) o;
+        saveAsFile(objectForTransfer);
     }
 
     @Override
@@ -30,7 +38,6 @@ public class ObjectEncoder extends SimpleChannelInboundHandler<Object> {
 
     }
 
-    /*если прилетел фаил*/
     private static void saveAsFile(FileObjectLibClass filePrepare) throws FileNotFoundException {
         FileOutputStream fos = new FileOutputStream("res_" + filePrepare.getFileName());
         try {
@@ -45,3 +52,5 @@ public class ObjectEncoder extends SimpleChannelInboundHandler<Object> {
     }
 
 }
+
+

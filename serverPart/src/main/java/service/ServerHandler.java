@@ -5,29 +5,34 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
-public class ServerDecoder extends SimpleChannelInboundHandler<String> {
+public class ServerHandler extends SimpleChannelInboundHandler<String> {
+    private static String clientName; //чей поток
+    private static boolean isAutorized = false; //авторизован ли
 
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
         System.out.println(msg);
         /*если запрос авторизации.   /auth логин пароль*/
+        //todo передалать на case of
         if (msg.startsWith("/auth")) {
             System.out.println("authorization");
             /*алгоритм авторизации*/
             authentication(msg, ctx);
 
         }
+        // todo прверка авторизован ли клиент
         /*если пришел запрос на отправку файла*/
-        if (msg.startsWith("/ready2transferFile")) {
-            System.out.println("Client ready to transfer file");
+        if (msg.startsWith("/ready2transferTree")) {
+            System.out.println("Client ready to transfer Tree");
 
             /*готовим приемник*/
-
-            ctx.writeAndFlush("/Lets_go!");
             /*ТУТ Затык*/
-            ctx.pipeline().remove(this);
-            ctx.pipeline().addLast(new ObjectEncoder(), new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
+            ctx.writeAndFlush("/Lets_go!");
+            ctx.pipeline().addFirst(new ObjectEncoder(), new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
+
+
+
             /*может надо вызват внешний метод и оттуда переконфигурировать пайплайны и оттуда же отправиь фаил"*/
 
         }
@@ -61,14 +66,16 @@ public class ServerDecoder extends SimpleChannelInboundHandler<String> {
                 String nick = (AuthenticationService.authenticationAlgorithm(parts[1], parts[2]));
                 if (!nick.equals("")) {
                     System.out.println(nick + " : authorization success");
+                    isAutorized = true;
                     /*добавляем в список активных клиентов*/
-                    ClientByIdHandler client = new ClientByIdHandler(nick, parts[1]);
-                    Server.subScribe(client);
+                    // Client client = new Client(nick, parts[1]);
+                    //  Server.subScribe(client); //лучше добавть в БД Connected\Disconnected
 
                     ctx.writeAndFlush("/authorization success");
                 } else {
                     ctx.writeAndFlush("/Wrong login or password.");
                     System.out.println(" Wrong login or password.");
+
 
                 }
             }
@@ -76,3 +83,36 @@ public class ServerDecoder extends SimpleChannelInboundHandler<String> {
     }
 
 }
+
+//class Client {
+//    private NioEventLoopGroup workerGroup;
+//    private ServerBootstrap server;
+//    private String name;
+//    private String login;
+//    private String idKey;
+//    //  private boolean isAuthorized;
+//
+//    public Client(String name, String login) {
+//        //  this.workerGroup = workerGroup;
+//        //  this.server = server;
+//        this.name = name;
+//        this.login = login;
+//        this.idKey = login + name;//todo генератор id по ключу НА СЕССИЮ
+//        //  isAuthorized = false;
+//
+//    }
+//    public String getIdKey() {
+//        return idKey;
+//    }
+//    public void setIdKey(String idKey) {
+//        this.idKey = idKey;
+//    }
+//    public String getName() {
+//        return name;
+//    }
+//    public void setName(String name) {
+//        this.name = name;
+//    }
+//
+//
+//}

@@ -22,9 +22,9 @@ public class ObjectDecoder extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        FileObjectLibClass objectForTransfer = new FileObjectLibClass("CLIENT_FOLDER/txt.txt");
-        ctx.writeAndFlush(objectForTransfer)
-                .addListener(ChannelFutureListener.CLOSE);
+//        FileObjectLibClass objectForTransfer = new FileObjectLibClass("CLIENT_FOLDER/txt.txt");
+//        ctx.writeAndFlush(objectForTransfer)
+//                .addListener(ChannelFutureListener.CLOSE);
     }
 
     @Override

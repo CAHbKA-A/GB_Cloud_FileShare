@@ -7,23 +7,17 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.serialization.ClassResolvers;
-import io.netty.handler.codec.serialization.ObjectDecoder;
-import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 public class Server {
     private final int PORT = 8899;
-    private static List<ClientByIdHandler> clientList;
+    private static List<Client_old> clientList;
     private AuthenticationService authService;
     private static final Logger LOGGER = LogManager.getLogger(Server.class.getName());
 
@@ -42,7 +36,7 @@ public class Server {
                         @Override
                         protected void initChannel(NioSocketChannel ch) throws Exception {
 
-                            ch.pipeline().addLast(new StringDecoder(), new StringEncoder(), new ServerDecoder()/*, new ObjectEncoder(), new ObjectDecoder(ClassResolvers.cacheDisabled(null))*/);
+                            ch.pipeline().addLast(new StringDecoder(), new StringEncoder(), new ServerHandler()/*, new ObjectEncoder(), new ObjectDecoder(ClassResolvers.cacheDisabled(null))*/);
 
                         }
                     })
@@ -64,12 +58,12 @@ public class Server {
     }
 
 
-    static synchronized void subScribe(ClientByIdHandler client) {
+    static synchronized void subScribe(Client_old client) {
         clientList.add(client);
 
     }
 
-    static synchronized void unSubScribe(ClientByIdHandler client) {
+    static synchronized void unSubScribe(Client_old client) {
         clientList.remove(client);
         LOGGER.info(client.getName() + " disconnected");
 

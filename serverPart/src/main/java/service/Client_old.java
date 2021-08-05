@@ -4,7 +4,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.nio.NioEventLoopGroup;
 
 
-public class ClientByIdHandler {
+public class Client_old {
     private NioEventLoopGroup workerGroup;
     private ServerBootstrap server;
     private String name;
@@ -12,7 +12,7 @@ public class ClientByIdHandler {
     private String idKey;
     //  private boolean isAuthorized;
 
-    public ClientByIdHandler(String name, String login) {
+    public Client_old(String name, String login) {
         //  this.workerGroup = workerGroup;
         //  this.server = server;
         this.name = name;
@@ -20,23 +20,17 @@ public class ClientByIdHandler {
         this.idKey = login + name;//todo генератор id по ключу НА СЕССИЮ
         //  isAuthorized = false;
 
-
     }
-
     public String getIdKey() {
         return idKey;
     }
-
     public void setIdKey(String idKey) {
         this.idKey = idKey;
     }
-
-
-    public String getName() {
+  public String getName() {
         return name;
     }
-
-    public void setName(String name) {
+   public void setName(String name) {
         this.name = name;
     }
 

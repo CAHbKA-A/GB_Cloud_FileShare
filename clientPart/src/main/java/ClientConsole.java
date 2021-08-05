@@ -1,5 +1,6 @@
 import Services.ClientDecoder;
 import Services.FileTreeCreator;
+import Services.ObjectEncoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -21,11 +22,11 @@ public class ClientConsole {
     private ChannelFuture channelFuture;
     private String clientFolder;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         ClientConsole clientConsole = new ClientConsole();
     }
 
-    private ClientConsole() {
+    private ClientConsole() throws InterruptedException {
 
         //TODO  GUIClient(); //TODO ТУТ будет GUI авторизации + выбор папки*
 
@@ -35,7 +36,7 @@ public class ClientConsole {
         singIn("B", "B");
         clientFolder = "CLIENT_FOLDER";
         //обираем список фалов и хэш клиентской папки, если не задана. если задана то можно будет сохранить все настройки сервера в фаил и оттуда брать. пока по дефолту
-        FolderTreeObject(clientFolder);
+        FileTreeCreator ClientFolderObj = FolderTreeObject(clientFolder);
 
         //TODO и отправка на сервер. сначала хэша и размера дирректории, если изменилось, то переача списка фалов
 
@@ -47,22 +48,34 @@ public class ClientConsole {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        /*передаем фаил*/
-        sendMessage("/ready2transferFile");
-        //тут пока затык
-        // sendMessage();
+
+        /*передаем структуру папки*/
+        sendMessage("/ready2transferTree"); //- предупреждаем,чтобы перестроил пйплайн на прием обьекта
+
+        try {
+            sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        /*отправляем само дерев*///тут пока затык
+        channelFuture.channel().writeAndFlush(ClientFolderObj).sync();
+
+        sendMessage("Done!");
+
 
     }
 
-    private void FolderTreeObject(String clientFolder) {
+    /*создаем струтуру каталогов клиента*/
+    private FileTreeCreator FolderTreeObject(String clientFolder) {
         /*сканируем клиентскую папку*/
         FileTreeCreator ftc = new FileTreeCreator(clientFolder);
         ftc.walkingTree();
-         System.out.println("Всего файлов: "+ ftc.getTotalFiles()+"  Размер локльной папки:"+ ftc.getClientFolderSize() + "  HASH: "+ftc.getClientFolderHash());
+        System.out.println("Всего файлов: " + ftc.getTotalFiles() + "  Размер локльной папки:" + ftc.getClientFolderSize() + "  HASH: " + ftc.getClientFolderHash());
 
-       //  System.out.println(ftc.getFileList());
-      //  System.out.println(ftc.getDirectoryList());
+        //  System.out.println(ftc.getFileList());
+        //  System.out.println(ftc.getDirectoryList());
         /*сериализуем для передачи на сервер в виде файла(обьекта)*/
+        return ftc;
     }
 
 
@@ -113,26 +126,6 @@ public class ClientConsole {
     public void disconnet(NioEventLoopGroup group) {
         group.shutdownGracefully();
     }
-
-
-//    public static void sendFileAsObject(String fileName) {
-//
-//        try {
-//
-//            FileObjectLibClass filePrepare = new FileObjectLibClass(fileName);
-//
-//            sleep(1000);
-//            Socket s = new Socket("localhost", 8880);
-//
-//            ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-//            out.writeObject(filePrepare);
-//            out.flush();
-//            System.out.println("done");
-//        } catch (IOException | InterruptedException e) {
-//            e.printStackTrace();
-//
-//        }
-//    }
 
 
 }
