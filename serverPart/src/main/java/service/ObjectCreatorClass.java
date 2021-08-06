@@ -1,3 +1,5 @@
+package service;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -6,8 +8,12 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 
 
-public class FileTreeCreator implements Serializable {
+public class ObjectCreatorClass implements Serializable {
 
+    private String TypeOfMessage;
+    private String message;
+    private String nameOfClent;
+    private String token;
     private String scanPath;
     private long clientFolderSize; //пригодяится для быстрой сверки каталогов
     private long clientFolderHash; //может пригодится для быстрой сверки каталого, если размеры совпадут или переопределить has /equals
@@ -18,13 +24,45 @@ public class FileTreeCreator implements Serializable {
     private ArrayList<FileProperty> fileList;
 
 
+    //генерируем сообщения
+    public ObjectCreatorClass(String auth, String s1, String s2) {
+        //todo переделать на caseOf
 
-    public ArrayList<Path> getDirectoryList() {
-        return directoryList;
+        //генерируем сообщения для авторизации (client->server)
+        if (auth.equals("auth")) {
+            //TODO шифруем пароль.
+            this.TypeOfMessage = "auth";
+            this.token = "0";
+            this.message = "/auth " + s1 + " " + s2;
+        }
+
+        //генерируем сообщения о результате авторизации (server->client)
+        if (auth.equals("auth_res"))
+        {
+            this.TypeOfMessage = "auth_res";
+            this.token = s1;
+            this.message =s2;
+        }
+
     }
 
-    public ArrayList<FileProperty> getFileList() {
-        return fileList;
+
+
+
+    public String getTypeOfMessage() {
+        return TypeOfMessage;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getNameOfClent() {
+        return nameOfClent;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     public long getClientFolderSize() {
@@ -32,7 +70,7 @@ public class FileTreeCreator implements Serializable {
     }
 
     public long getClientFolderHash() {
-        return totalFiles*clientFolderSize*32;
+        return totalFiles * clientFolderSize * 32;
     }
 
     public int getTotalFiles() {
@@ -72,10 +110,10 @@ public class FileTreeCreator implements Serializable {
     ;
 
 
-    public FileTreeCreator(String scanPath) {
+    public ObjectCreatorClass(String scanPath) {
         this.scanPath = scanPath;
-        this.totalFiles =0;
-        this.clientFolderSize=0;
+        this.totalFiles = 0;
+        this.clientFolderSize = 0;
     }
 
     public void walkingTree() {
@@ -94,12 +132,12 @@ public class FileTreeCreator implements Serializable {
 
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                  //  System.out.println(file);
+                    //  System.out.println(file);
                     File fileА = new File(String.valueOf(file));
                     fileList.add(new FileProperty(fileА.getName(), file, fileА.length(), fileА.lastModified(), fileА.length() + fileА.lastModified()));
                     clientFolderSize += fileА.length(); //считаем размер всего каталога с файлами
                     totalFiles++; //считаем файлы
-                       //     System.out.println(fileА.length());
+                    //     System.out.println(fileА.length());
                     //  System.out.println(fileА.getName());
                     //  System.out.println(fileА.lastModified());
                     return FileVisitResult.CONTINUE;

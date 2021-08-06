@@ -8,8 +8,12 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 
 
-public class FileTreeCreator implements Serializable {
+public class ObjectCreatorClass implements Serializable {
+
+    private String TypeOfMessage;
+    private String message;
     private String nameOfClent;
+    private String token;
     private String scanPath;
     private long clientFolderSize; //пригодяится для быстрой сверки каталогов
     private long clientFolderHash; //может пригодится для быстрой сверки каталого, если размеры совпадут или переопределить has /equals
@@ -19,6 +23,47 @@ public class FileTreeCreator implements Serializable {
     /*список файлов, чтобы восстановить структуру каталогов*/
     private ArrayList<FileProperty> fileList;
 
+
+    //генерируем сообщения
+    public ObjectCreatorClass(String auth, String s1, String s2) {
+        //todo переделать на caseOf
+
+        //генерируем сообщения для авторизации (client->server)
+        if (auth.equals("auth")) {
+            //TODO шифруем пароль.
+            this.TypeOfMessage = "auth";
+            this.token = "0";
+            this.message = "/auth " + s1 + " " + s2;
+        }
+
+        //генерируем сообщения о результате авторизации (server->client)
+        if (auth.equals("auth_res"))
+        {
+            this.TypeOfMessage = "auth_res";
+            this.token = s1;
+            this.message =s2;
+        }
+
+    }
+
+
+
+
+    public String getTypeOfMessage() {
+        return TypeOfMessage;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getNameOfClent() {
+        return nameOfClent;
+    }
+
+    public String getToken() {
+        return token;
+    }
 
     public long getClientFolderSize() {
         return clientFolderSize;
@@ -65,7 +110,7 @@ public class FileTreeCreator implements Serializable {
     ;
 
 
-    public FileTreeCreator(String scanPath) {
+    public ObjectCreatorClass(String scanPath) {
         this.scanPath = scanPath;
         this.totalFiles = 0;
         this.clientFolderSize = 0;

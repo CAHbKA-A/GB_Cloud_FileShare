@@ -1,3 +1,5 @@
+package Services;
+
 import java.io.Serializable;
 
 public class Cat implements Serializable {

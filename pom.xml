@@ -13,6 +13,7 @@
         <module>serverPart</module>
         <module>lib</module>
         <module>SenderObj</module>
+        <module>SharedClass</module>
     </modules>
 
     <properties>

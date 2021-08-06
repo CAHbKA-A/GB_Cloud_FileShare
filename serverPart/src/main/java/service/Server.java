@@ -1,61 +1,51 @@
 package service;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Server {
     private final int PORT = 8899;
-  //  private static List<Client_old> clientList;
+    private final String HOST = "localhost";
+    //  private static List<Client_old> clientList;
     private AuthenticationService authService;
     private static final Logger LOGGER = LogManager.getLogger(Server.class.getName());
 
     public void start() {
 
- //       clientList = new ArrayList<>();
-        NioEventLoopGroup bossGroup = new NioEventLoopGroup(5);
-        NioEventLoopGroup workerGroup = new NioEventLoopGroup();
 
+        EventLoopGroup group = new NioEventLoopGroup();
         try {
-            ServerBootstrap server = new ServerBootstrap();
-            server
-                    .group(bossGroup, workerGroup)
+            new ServerBootstrap().group(group)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new ChannelInitializer<NioSocketChannel>() {
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(NioSocketChannel ch) throws Exception {
-
-                            ch.pipeline().addLast(new StringDecoder(), new StringEncoder(), new ServerHandler()/*, new ObjectEncoder(), new ObjectDecoder(ClassResolvers.cacheDisabled(null))*/);
-
+                        public void initChannel(SocketChannel socketChannel) {
+                            ChannelPipeline pipeline = socketChannel.pipeline();
+                            pipeline.addLast(new ObjectEncoder(), new ObjectDecoder(ClassResolvers.cacheDisabled(null)), new ServerHandler());
                         }
                     })
-                    .option(ChannelOption.SO_BACKLOG, 128)
-                    .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-            ChannelFuture channelFuture = server.bind(PORT).sync();
-            LOGGER.info("Server started!");
-            channelFuture.channel().closeFuture().sync();
+                    .bind(HOST, PORT).sync()
+                    .channel().closeFuture().syncUninterruptibly();
+            LOGGER.info("Server started");
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         } finally {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
+            group.shutdownGracefully();
         }
-
-        authService = new AuthenticationService();
-
     }
+
+
 //
 //
 //    static synchronized void subScribe(Client_old client) {
