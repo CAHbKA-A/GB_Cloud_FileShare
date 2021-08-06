@@ -1,9 +1,9 @@
 package service;
 
 
-import Services.Cat;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lib.ObjectCreatorClass;
 
 public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 
@@ -11,11 +11,11 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        Cat cat = (Cat) msg;
-       System.out.println(cat+" received");
-     /*   ObjectCreatorClass objectCreatorClass = (ObjectCreatorClass) msg;
+//        Cat cat = (Cat) msg;
+//       System.out.println(cat+" received");
+        ObjectCreatorClass objectCreatorClass = (ObjectCreatorClass) msg;
         System.out.println(objectCreatorClass+" received");
-*/
+
     }
 
     @Override

@@ -3,6 +3,7 @@ package Services;
 import io.netty.channel.ChannelHandlerContext;
 
 import io.netty.channel.SimpleChannelInboundHandler;
+import lib.ObjectCreatorClass;
 
 
 public class ClientHandler extends SimpleChannelInboundHandler<Object> {
@@ -10,8 +11,8 @@ public class ClientHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ctx.writeAndFlush(new Cat( "mur"));
-      //  ctx.writeAndFlush(new ObjectCreatorClass( "mur"));
+       // ctx.writeAndFlush(new Cat( "mur"));
+        ctx.writeAndFlush(new ObjectCreatorClass( "auth"));
 
     }
 
