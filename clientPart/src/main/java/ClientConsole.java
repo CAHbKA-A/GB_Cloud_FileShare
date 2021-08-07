@@ -12,7 +12,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import Services.ObjectCreatorClass;
+import lib.ObjectCreatorClass;
+
 
 import java.net.Socket;
 
@@ -35,15 +36,13 @@ public class ClientConsole {
         connection();
 
 
+         clientFolder = "CLIENT_FOLDER";
+        //обираем список фалов и хэш клиентской папки, если не задана. если задана то можно будет сохранить все настройки сервера в фаил и оттуда брать. пока по дефолту
+        // ObjectCreator ClientFolderObj = new ObjectCreator(clientFolder)
 
 
 
 
-
-//        //авторизация
-//        ObjectCreator o_aut = new ObjectCreator("auth","B", "B" );
-//        System.out.println("try auth");
-//       sendObject(o_aut);
 
 
         //  clientFolder = "CLIENT_FOLDER";

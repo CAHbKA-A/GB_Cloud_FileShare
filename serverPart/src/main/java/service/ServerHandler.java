@@ -11,10 +11,13 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-//        Cat cat = (Cat) msg;
-//       System.out.println(cat+" received");
+
         ObjectCreatorClass objectCreatorClass = (ObjectCreatorClass) msg;
-        System.out.println(objectCreatorClass+" received");
+        String type=objectCreatorClass.getTypeOfMessage();
+        System.out.println(type+" received");
+        messageProcessor(type,objectCreatorClass,ctx);
+
+
 
     }
 
@@ -31,7 +34,10 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 
 
 
+ void messageProcessor(String type,ObjectCreatorClass o,ChannelHandlerContext ctx){
+        if (type.equals("auth")) authentication(o.getMessage(),ctx);
 
+ }
 
 
 
@@ -42,11 +48,12 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
                 String nick = (AuthenticationService.authenticationAlgorithm(parts[1], parts[2]));
                 if (!nick.equals("")) {
                     String token="12";// todo генератор токенов с записю в бд
-                    ObjectCreatorClass o_aut = new ObjectCreatorClass("auth_res",token, "authorization success");
-                    sendObject(o_aut,ctx);
+                    ObjectCreatorClass o_aut = new ObjectCreatorClass("auth_res",token, "Authorization success");
+                   sendObject(o_aut,ctx);
                      System.out.println(nick + " : authorization success");
                 } else {
-                    ctx.writeAndFlush("/Wrong login or password.");
+                    sendObject(new ObjectCreatorClass("auth_res","0", "/Wrong login or password"),ctx);
+                   // ctx.writeAndFlush("/Wrong login or password.");
                     System.out.println(" Wrong login or password.");
 
             }
@@ -56,14 +63,13 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 
 
     public void sendObject(ObjectCreatorClass o, ChannelHandlerContext ctx) {
-        System.out.println("Sending: " + o);
+        System.out.println("Sending: " + o.getTypeOfMessage());
         try {
             ctx.channel().writeAndFlush(o).sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-
 
 
 

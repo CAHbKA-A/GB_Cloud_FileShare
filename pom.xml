@@ -11,6 +11,7 @@
     <modules>
         <module>clientPart</module>
         <module>serverPart</module>
+        <module>srareClass</module>
 
     </modules>
 
