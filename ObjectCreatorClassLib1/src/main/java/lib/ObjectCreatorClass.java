@@ -53,17 +53,32 @@ public class ObjectCreatorClass implements Serializable {
         }
 
         //генерируем сообщения о результате авторизации (server->client)
-        if (auth.equals("auth_res"))
-        {
+        if (auth.equals("auth_res")) {
             this.TypeOfMessage = "auth_res";
             this.token = s1;
-            this.message =s2;
+            this.message = s2;
         }
 
+        //генерируем дерево (client->server)
+        if (auth.equals("tree")) {
+            this.TypeOfMessage = "tree";
+            this.scanPath = s1;
+            this.totalFiles = 0;
+            this.clientFolderSize = 0;
+            walkingTree();  }
+
+
+        //генерируем дерево (client<->server)
+        if (auth.equals("test")) {
+            this.message = "ytyt2";
+            this.TypeOfMessage = "test";
+            this.scanPath = s1;
+            this.totalFiles = 444;
+            this.clientFolderSize = 55;
+
+        }
 
     }
-
-
 
 
     public String getTypeOfMessage() {
@@ -124,14 +139,6 @@ public class ObjectCreatorClass implements Serializable {
         }
     }
 
-    ;
-
-
-    public ObjectCreatorClass(String scanPath) {
-        this.scanPath = scanPath;
-        this.totalFiles = 0;
-        this.clientFolderSize = 0;
-    }
 
     public void walkingTree() {
 
@@ -142,14 +149,13 @@ public class ObjectCreatorClass implements Serializable {
             Files.walkFileTree(Paths.get(scanPath), new FileVisitor<Path>() {
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-                    //System.out.println(dir);
                     directoryList.add(dir);
                     return FileVisitResult.CONTINUE;
                 }
 
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                    //  System.out.println(file);
+
                     File fileА = new File(String.valueOf(file));
                     fileList.add(new FileProperty(fileА.getName(), file, fileА.length(), fileА.lastModified(), fileА.length() + fileА.lastModified()));
                     clientFolderSize += fileА.length(); //считаем размер всего каталога с файлами

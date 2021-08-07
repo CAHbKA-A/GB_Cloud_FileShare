@@ -36,10 +36,6 @@ public class ClientConsole {
         connection();
 
 
-         clientFolder = "CLIENT_FOLDER";
-        //обираем список фалов и хэш клиентской папки, если не задана. если задана то можно будет сохранить все настройки сервера в фаил и оттуда брать. пока по дефолту
-        // ObjectCreator ClientFolderObj = new ObjectCreator(clientFolder)
-
 
 
 
@@ -66,18 +62,8 @@ public class ClientConsole {
 //    }
 
 
-    /*создаем струтуру каталогов клиента*/
-    private ObjectCreatorClass FolderTreeObject(String clientFolder) {
-        /*сканируем клиентскую папку*/
-        ObjectCreatorClass ftc = new ObjectCreatorClass(clientFolder);
-        ftc.walkingTree();
-        System.out.println("Всего файлов: " + ftc.getTotalFiles() + "  Размер локльной папки:" + ftc.getClientFolderSize() + "  HASH: " + ftc.getClientFolderHash());
 
-        //  System.out.println(ftc.getFileList());
-        //  System.out.println(ftc.getDirectoryList());
-        /*сериализуем для передачи на сервер в виде файла(обьекта)*/
-        return ftc;
-    }
+
 
 
     public void connection() {
@@ -96,7 +82,6 @@ public class ClientConsole {
                     .connect(HOST, PORT).sync()
                     .channel().closeFuture().sync();
 
-
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -109,6 +94,8 @@ public class ClientConsole {
     public void disconnet(NioEventLoopGroup group) {
         group.shutdownGracefully();
     }
+
+
 
 
 }

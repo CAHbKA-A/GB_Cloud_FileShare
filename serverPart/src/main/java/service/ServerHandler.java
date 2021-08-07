@@ -16,13 +16,13 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
         String type=objectCreatorClass.getTypeOfMessage();
         System.out.println(type+" received");
         messageProcessor(type,objectCreatorClass,ctx);
-
+        System.out.println("!!!");
 
 
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Object o) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Object o) throws Exception {
 
     }
 
@@ -31,11 +31,16 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
         cause.printStackTrace();
         ctx.channel().close();
     }
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("Client disconnected");
+    }
 
 
 
  void messageProcessor(String type,ObjectCreatorClass o,ChannelHandlerContext ctx){
         if (type.equals("auth")) authentication(o.getMessage(),ctx);
+        if (type.equals("tree")) System.out.println("i have a tree");
 
  }
 
@@ -53,8 +58,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
                      System.out.println(nick + " : authorization success");
                 } else {
                     sendObject(new ObjectCreatorClass("auth_res","0", "/Wrong login or password"),ctx);
-                   // ctx.writeAndFlush("/Wrong login or password.");
-                    System.out.println(" Wrong login or password.");
+                     System.out.println(" Wrong login or password.");
 
             }
         }

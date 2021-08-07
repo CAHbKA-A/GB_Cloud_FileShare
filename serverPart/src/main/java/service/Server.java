@@ -2,6 +2,7 @@ package service;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -16,16 +17,16 @@ import org.apache.log4j.Logger;
 public class Server {
     private final int PORT = 8899;
     private final String HOST = "localhost";
-    //  private static List<Client_old> clientList;
     private AuthenticationService authService;
     private static final Logger LOGGER = LogManager.getLogger(Server.class.getName());
 
     public void start() {
+        NioEventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        NioEventLoopGroup workerGroup = new NioEventLoopGroup();
 
-
-        EventLoopGroup group = new NioEventLoopGroup();
         try {
-            new ServerBootstrap().group(group)
+            ServerBootstrap server = new ServerBootstrap();
+            server.group(bossGroup,workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
@@ -34,14 +35,16 @@ public class Server {
                             pipeline.addLast(new ObjectEncoder(), new ObjectDecoder(ClassResolvers.cacheDisabled(null)), new ServerHandler());
                         }
                     })
-
+                    .option(ChannelOption.SO_BACKLOG, 12800000)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .bind(HOST, PORT).sync()
                     .channel().closeFuture().syncUninterruptibly();
-            LOGGER.info("Server started");
+
         } catch (InterruptedException e) {
             LOGGER.error(e);
         } finally {
-            group.shutdownGracefully();
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
         }
     }
 
