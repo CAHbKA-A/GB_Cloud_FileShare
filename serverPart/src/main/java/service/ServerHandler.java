@@ -18,7 +18,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
         String type = objectCreatorClass.getTypeOfMessage();
         System.out.println(type + " received");
         messageProcessor(type, objectCreatorClass, ctx);
-        System.out.println("!!!");
+        System.out.println("<<<<>>>>");
 
 
     }
@@ -42,7 +42,8 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 
     void messageProcessor(String type, ObjectCreatorClass o, ChannelHandlerContext ctx) {
         if (type.equals("auth")) authentication(o.getMessage(), ctx);
-        if (type.equals("tree")) System.out.println("i have a tree");
+        if (type.equals("tree")) {System.out.println("i have a tree: "+ o.toString());}
+
         if (type.equals("file")) {
             System.out.println("i have a file:" + o.getFileName() + " .Size:" + o.getFileSize());
             saveAsFile(o);
@@ -89,6 +90,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
     }
 

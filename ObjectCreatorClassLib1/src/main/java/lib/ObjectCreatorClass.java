@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class ObjectCreatorClass implements Serializable {
@@ -21,9 +23,9 @@ public class ObjectCreatorClass implements Serializable {
     private long clientFolderHash; //может пригодится для быстрой сверки каталого, если размеры совпадут или переопределить has /equals
     private int totalFiles; //Количество файлов
     /*список директорий, чтобы восстановить структуру каталогов*/
-    private ArrayList<Path> directoryList;
+    private List<String> directoryList;
     /*список файлов, чтобы восстановить структуру каталогов*/
-    private ArrayList<FileProperty> fileList;
+    private List<FileProperty> fileList;
     private byte[] fileBin;
 
 
@@ -35,11 +37,14 @@ public class ObjectCreatorClass implements Serializable {
                 ", nameOfClent='" + nameOfClent + '\'' +
                 ", token='" + token + '\'' +
                 ", scanPath='" + scanPath + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", fileSize=" + fileSize +
                 ", clientFolderSize=" + clientFolderSize +
                 ", clientFolderHash=" + clientFolderHash +
                 ", totalFiles=" + totalFiles +
                 ", directoryList=" + directoryList +
                 ", fileList=" + fileList +
+                ", fileBin=" + Arrays.toString(fileBin) +
                 '}';
     }
 
@@ -68,6 +73,8 @@ public class ObjectCreatorClass implements Serializable {
             this.scanPath = s1;
             this.totalFiles = 0;
             this.clientFolderSize = 0;
+            directoryList= new ArrayList<>();
+            fileList= new ArrayList<>();
             walkingTree();
         }
 
@@ -126,9 +133,9 @@ public class ObjectCreatorClass implements Serializable {
     }
 
     /*обьект фаил, содержащий инфу о фале*/
-    class FileProperty {
+    class FileProperty implements Serializable{
         private String name;
-        private Path path;
+        private String path;
         private long size;
         private long lastModify;
         private double hashId;
@@ -136,7 +143,7 @@ public class ObjectCreatorClass implements Serializable {
 
         public FileProperty(String name, Path path, long size, long lastModify, double hashId) {
             this.name = name;
-            this.path = path;
+            this.path = path.toString();
             this.size = size;
             this.lastModify = lastModify;
             this.hashId = hashId;
@@ -158,14 +165,13 @@ public class ObjectCreatorClass implements Serializable {
 
     public void walkingTree() {
 
-        directoryList = new ArrayList<>();
-        fileList = new ArrayList<>();
+
 
         try {
             Files.walkFileTree(Paths.get(scanPath), new FileVisitor<Path>() {
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-                    directoryList.add(dir);
+                    directoryList.add(dir.toString());
                     return FileVisitResult.CONTINUE;
                 }
 
@@ -173,7 +179,7 @@ public class ObjectCreatorClass implements Serializable {
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
 
                     File fileА = new File(String.valueOf(file));
-                    fileList.add(new FileProperty(fileА.getName(), file, fileА.length(), fileА.lastModified(), fileА.length() + fileА.lastModified()));
+                  fileList.add(new FileProperty(fileА.getName(), file, fileА.length(), fileА.lastModified(), fileА.length() + fileА.lastModified()));
                     clientFolderSize += fileА.length(); //считаем размер всего каталога с файлами
                     totalFiles++; //считаем файлы
                     //     System.out.println(fileА.length());

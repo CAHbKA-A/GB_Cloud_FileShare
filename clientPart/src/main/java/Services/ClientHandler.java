@@ -5,12 +5,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import lib.ObjectCreatorClass;
 
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-
-
-
 public class ClientHandler extends SimpleChannelInboundHandler<Object> {
     private String token;
     private String clientFolder = "CLIENT_FOLDER";
@@ -68,31 +62,19 @@ public class ClientHandler extends SimpleChannelInboundHandler<Object> {
 
     public void workingProcess(ChannelHandlerContext ctx) {
 
+
+        //обираем список фалов и хэш клиентской папки, если не задана. если задана то можно будет сохранить все настройки сервера в фаил и оттуда брать. пока по дефолту
+        /*создаем струтуру каталогов клиента*/
+
+        ObjectCreatorClass tree = new ObjectCreatorClass("tree", clientFolder, "");
+        sendObject(tree,ctx);
+
+
+
         /*Передача фала небольшого файл. работает*/
         ObjectCreatorClass file = new ObjectCreatorClass("file", clientFolder, "txt.txt");
         sendObject(file,ctx);
 
-
-
-/*!!!!!!!тут не пашет)-**/
-        //обираем список фалов и хэш клиентской папки, если не задана. если задана то можно будет сохранить все настройки сервера в фаил и оттуда брать. пока по дефолту
-        /*создаем струтуру каталогов клиента*/
-      //  ObjectCreatorClass tree = new ObjectCreatorClass("tree", clientFolder, "");
-      //  System.out.println(tree);
-      //  System.out.println("Всего файлов: " + tree.getTotalFiles() + "  Размер локльной папки:" + tree.getClientFolderSize() + "  HASH: " + tree.getClientFolderHash());
-
-
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("2tree.dat"));
-            oos.writeObject(new ObjectCreatorClass("auth", "A", "A"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-
-      //  sendObject(new ObjectCreatorClass("tree", clientFolder, ""), ctx);
-       // sendObject(tree,ctx);
 
 
     }
