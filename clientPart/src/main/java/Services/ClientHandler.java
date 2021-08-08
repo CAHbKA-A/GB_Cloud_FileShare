@@ -4,11 +4,11 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lib.ObjectCreatorClass;
 
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import static java.lang.Thread.sleep;
 
 
 public class ClientHandler extends SimpleChannelInboundHandler<Object> {
@@ -68,12 +68,19 @@ public class ClientHandler extends SimpleChannelInboundHandler<Object> {
 
     public void workingProcess(ChannelHandlerContext ctx) {
 
+        /*Передача фала небольшого файл. работает*/
+        ObjectCreatorClass file = new ObjectCreatorClass("file", clientFolder, "txt.txt");
+        sendObject(file,ctx);
+
+
+
 /*!!!!!!!тут не пашет)-**/
         //обираем список фалов и хэш клиентской папки, если не задана. если задана то можно будет сохранить все настройки сервера в фаил и оттуда брать. пока по дефолту
         /*создаем струтуру каталогов клиента*/
-        ObjectCreatorClass tree = new ObjectCreatorClass("tree", clientFolder, "");
+      //  ObjectCreatorClass tree = new ObjectCreatorClass("tree", clientFolder, "");
       //  System.out.println(tree);
       //  System.out.println("Всего файлов: " + tree.getTotalFiles() + "  Размер локльной папки:" + tree.getClientFolderSize() + "  HASH: " + tree.getClientFolderHash());
+
 
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("2tree.dat"));

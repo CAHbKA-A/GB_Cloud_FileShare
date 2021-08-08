@@ -15,6 +15,8 @@ public class ObjectCreatorClass implements Serializable {
     private String nameOfClent;
     private String token;
     private String scanPath;
+    private String fileName;
+    private long fileSize;
     private long clientFolderSize; //пригодяится для быстрой сверки каталогов
     private long clientFolderHash; //может пригодится для быстрой сверки каталого, если размеры совпадут или переопределить has /equals
     private int totalFiles; //Количество файлов
@@ -22,6 +24,7 @@ public class ObjectCreatorClass implements Serializable {
     private ArrayList<Path> directoryList;
     /*список файлов, чтобы восстановить структуру каталогов*/
     private ArrayList<FileProperty> fileList;
+    private byte[] fileBin;
 
 
     @Override
@@ -65,16 +68,17 @@ public class ObjectCreatorClass implements Serializable {
             this.scanPath = s1;
             this.totalFiles = 0;
             this.clientFolderSize = 0;
-            walkingTree();  }
+            walkingTree();
+        }
 
 
         //генерируем дерево (client<->server)
-        if (auth.equals("test")) {
-            this.message = "ytyt2";
-            this.TypeOfMessage = "test";
+        if (auth.equals("file")) {
+            this.TypeOfMessage = "file";
             this.scanPath = s1;
-            this.totalFiles = 444;
-            this.clientFolderSize = 55;
+            this.message = "file";
+            this.totalFiles = 1;
+            filePacking(s1+"/"+s2);
 
         }
 
@@ -87,6 +91,18 @@ public class ObjectCreatorClass implements Serializable {
 
     public String getMessage() {
         return message;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public long getFileSize() {
+        return fileSize;
+    }
+
+    public byte[] getFileBin() {
+        return fileBin;
     }
 
     public String getNameOfClent() {
@@ -184,4 +200,23 @@ public class ObjectCreatorClass implements Serializable {
 
 
     }
+
+
+    public void filePacking(String fileName) {
+
+        this.fileName = fileName;
+        File inputFile = new File(fileName);
+        this.fileSize = inputFile.length();
+        StringBuilder fileInfo = new StringBuilder(inputFile.getPath());
+        this.message = fileInfo.toString();
+        try {
+            System.out.println(Paths.get(fileName));
+            this.fileBin = Files.readAllBytes(Paths.get(fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
+
+
