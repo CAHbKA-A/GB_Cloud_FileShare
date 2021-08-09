@@ -8,6 +8,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 public class ObjectCreatorClass implements Serializable {
@@ -20,7 +21,7 @@ public class ObjectCreatorClass implements Serializable {
     private String fileName;
     private long fileSize;
     private long clientFolderSize; //пригодяится для быстрой сверки каталогов
-    private long clientFolderHash; //может пригодится для быстрой сверки каталого, если размеры совпадут или переопределить has /equals
+ //   private long clientFolderHash; //может пригодится для быстрой сверки каталого, если размеры совпадут или переопределить has /equals
     private int totalFiles; //Количество файлов
     /*список директорий, чтобы восстановить структуру каталогов*/
     private List<String> directoryList;
@@ -28,6 +29,20 @@ public class ObjectCreatorClass implements Serializable {
     private List<FileProperty> fileList;
     private byte[] fileBin;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ObjectCreatorClass that = (ObjectCreatorClass) o;
+        //todo имена каталогов разичаются. сделать выдергу из полного имени файла тольо имя самого файла
+        return clientFolderSize == that.clientFolderSize && totalFiles == that.totalFiles  && Objects.equals(directoryList, that.directoryList) && Objects.equals(fileList, that.fileList); /*todo вспомнить как сравниваются Листы*/
+
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(clientFolderSize, totalFiles, directoryList, fileList);
+    }
 
     @Override
     public String toString() {
@@ -40,7 +55,7 @@ public class ObjectCreatorClass implements Serializable {
                 ", fileName='" + fileName + '\'' +
                 ", fileSize=" + fileSize +
                 ", clientFolderSize=" + clientFolderSize +
-                ", clientFolderHash=" + clientFolderHash +
+              //  ", clientFolderHash=" + clientFolderHash +
                 ", totalFiles=" + totalFiles +
                 ", directoryList=" + directoryList +
                 ", fileList=" + fileList +
@@ -124,8 +139,21 @@ public class ObjectCreatorClass implements Serializable {
         return clientFolderSize;
     }
 
-    public long getClientFolderHash() {
-        return totalFiles * clientFolderSize * 32;
+    // public long getClientFolderHash() {
+    //    return totalFiles * clientFolderSize * 32;
+ //   }
+
+
+    public String getScanPath() {
+        return scanPath;
+    }
+
+    public List<String> getDirectoryList() {
+        return directoryList;
+    }
+
+    public List<FileProperty> getFileList() {
+        return fileList;
     }
 
     public int getTotalFiles() {
@@ -140,6 +168,21 @@ public class ObjectCreatorClass implements Serializable {
         private long lastModify;
         private double hashId;
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            FileProperty that = (FileProperty) o;
+            return size == that.size && lastModify == that.lastModify && Double.compare(that.hashId, hashId) == 0 ;
+            /*имя каталогов разное еа сервере и у клиета. name и path опка убираем
+            //todo выделить из полного именя только  имя файла
+            return size == that.size && lastModify == that.lastModify && Double.compare(that.hashId, hashId) == 0 && name.equals(that.name) && path.equals(that.path);*/
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash( size, lastModify, hashId);
+        }
 
         public FileProperty(String name, Path path, long size, long lastModify, double hashId) {
             this.name = name;
