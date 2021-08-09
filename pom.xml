@@ -11,7 +11,9 @@
     <modules>
         <module>clientPart</module>
         <module>serverPart</module>
-        <module>lib</module>
+        <module>srareClass</module>
+        <module>ObjectCreatorClassLib1</module>
+
     </modules>
 
     <properties>
