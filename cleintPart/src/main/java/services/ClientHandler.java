@@ -1,4 +1,4 @@
-package Services;
+package services;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

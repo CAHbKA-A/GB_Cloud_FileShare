@@ -3,6 +3,8 @@ package service;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+
+
 import lib.ObjectCreatorClass;
 
 import java.io.FileOutputStream;
@@ -103,12 +105,12 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
     }
 
     public void compareTree(ObjectCreatorClass remoteTree) {
- // todo как то продумать что делать, если клиент зашел с разных ПК. если ервый раз, то все выкачиваем клиенту, есои не первый раз, то пока не ясно что считать актуальным каталогом
+        // todo как то продумать что делать, если клиент зашел с разных ПК. если ервый раз, то все выкачиваем клиенту, есои не первый раз, то пока не ясно что считать актуальным каталогом
         /*сканируем папки и файлы на сервере*/
-        String clientFolder ="CLIENT_FOLDER";
-        ObjectCreatorClass localTree = new ObjectCreatorClass("tree", "SERVER_FOLDER/"+clientFolder, "");
-      //  System.out.println("Remote folder Size = "+ remoteTree.getClientFolderSize()+"   Local Folder Size = "+localTree.getClientFolderSize());
-      // System.out.println("Remote folder Hash = "+ remoteTree.getClientFolderHash()+"   Local Folder Size = "+localTree.getClientFolderHash());
+        String clientFolder = "CLIENT_FOLDER";
+        ObjectCreatorClass localTree = new ObjectCreatorClass("tree", "SERVER_FOLDER/" + clientFolder, "");
+        //  System.out.println("Remote folder Size = "+ remoteTree.getClientFolderSize()+"   Local Folder Size = "+localTree.getClientFolderSize());
+        // System.out.println("Remote folder Hash = "+ remoteTree.getClientFolderHash()+"   Local Folder Size = "+localTree.getClientFolderHash());
 
         if (remoteTree == localTree) {
             System.out.println("Folders same");
@@ -116,11 +118,11 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
         }
         System.out.println("folders are different/ let's synchronize");
 
-        /*срвниваем струтуру каталогов*/
+        /*строим струтуру каталогов*/
         List<String> remoteDirectoryList = remoteTree.getDirectoryList();
         for (String s : remoteDirectoryList) {
-            System.out.println(s);
-            Path path = Paths.get("SERVER_FOLDER/"+s);
+          //  System.out.println(s);
+            Path path = Paths.get("SERVER_FOLDER/" + s);
             if (!Files.exists(path)) {
                 try {
                     Files.createDirectory(path);
@@ -130,7 +132,15 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
             }
 
         }
+        System.out.println( "Folders synchronized");
 
-
+        /*сравниваем файлы*/
+      //  System.out.println(remoteTree.getFileList().get);
+     //  List<FileProperty> remoteFileList = remoteTree.getFileList();
+//        for (FileProperty fileProperty : remoteFileList) {
+//           ;
+//        }
     }
 }
+
+

@@ -161,50 +161,6 @@ public class ObjectCreatorClass implements Serializable {
     }
 
     /*обьект фаил, содержащий инфу о фале*/
-    class FileProperty implements Serializable{
-        private String name;
-        private String path;
-        private long size;
-        private long lastModify;
-        private double hashId;
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            FileProperty that = (FileProperty) o;
-            return size == that.size && lastModify == that.lastModify && Double.compare(that.hashId, hashId) == 0 ;
-            /*имя каталогов разное еа сервере и у клиета. name и path опка убираем
-            //todo выделить из полного именя только  имя файла
-            return size == that.size && lastModify == that.lastModify && Double.compare(that.hashId, hashId) == 0 && name.equals(that.name) && path.equals(that.path);*/
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash( size, lastModify, hashId);
-        }
-
-        public FileProperty(String name, Path path, long size, long lastModify, double hashId) {
-            this.name = name;
-            this.path = path.toString();
-            this.size = size;
-            this.lastModify = lastModify;
-            this.hashId = hashId;
-
-        }
-
-        @Override
-        public String toString() {
-            return "FileProperty{" +
-                    "name='" + name + '\'' +
-                    ", path=" + path +
-                    ", size=" + size +
-                    ", lastModify=" + lastModify +
-                    ", hashId=" + hashId +
-                    '}';
-        }
-    }
-
 
     public void walkingTree() {
 
