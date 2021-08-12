@@ -1,8 +1,9 @@
 package services;
 
+import ObjectCreatorClassLib.ObjectCreatorClass;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import lib.ObjectCreatorClass;
+
 
 
 public class ClientHandler extends SimpleChannelInboundHandler<Object> {
@@ -46,7 +47,13 @@ public class ClientHandler extends SimpleChannelInboundHandler<Object> {
             } else
                 System.out.println("Authorization failure");
         }
-        ;
+
+
+        if (type.equals("giveMeFiles")){
+            System.out.println("We must send some files to server");
+        }
+
+
 
     }
 
@@ -65,14 +72,15 @@ public class ClientHandler extends SimpleChannelInboundHandler<Object> {
 
 
 //        /*Передача фала небольшого файл. работает - пока для теста, чтобы не потерять оставлю тут */
-//        ObjectCreatorClass file = new ObjectCreatorClass("file", clientFolder, "txt.txt");
-//        sendObject(file,ctx);
+    //    ObjectCreatorClass file = new ObjectCreatorClass("file", clientFolder, "txt.txt");
+     //   sendObject(file,ctx);
 
 
         //обираем список фалов и хэш клиентской папки, если не задана. если задана то можно будет сохранить все настройки сервера в фаил и оттуда брать. пока по дефолту
         /*создаем струтуру каталогов клиента*/
 
         ObjectCreatorClass tree = new ObjectCreatorClass("tree", clientFolder, "");
+
         sendObject(tree,ctx);
 
 

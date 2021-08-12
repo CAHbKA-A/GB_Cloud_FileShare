@@ -13,6 +13,7 @@
         <module>serverPart</module>
 
         <module>cleintPart</module>
+        <module>FilePropertyLib</module>
 
     </modules>
 
