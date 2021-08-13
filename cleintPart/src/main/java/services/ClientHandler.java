@@ -5,7 +5,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 
-
 public class ClientHandler extends SimpleChannelInboundHandler<Object> {
     private String token;
     private String clientFolder = "CLIENT_FOLDER";
@@ -16,8 +15,8 @@ public class ClientHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-       //авторизуемся
-          sendObject(new ObjectCreatorClass("auth", "A", "A"), ctx);
+        //авторизуемся
+        sendObject(new ObjectCreatorClass("auth", "A", "A"), ctx);
 
 
     }
@@ -49,10 +48,9 @@ public class ClientHandler extends SimpleChannelInboundHandler<Object> {
         }
 
 
-        if (type.equals("giveMeFiles")){
+        if (type.equals("giveMeFiles")) {
             System.out.println("We must send some files to server");
         }
-
 
 
     }
@@ -61,7 +59,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Object> {
     public void sendObject(ObjectCreatorClass o, ChannelHandlerContext ctx) {
         System.out.println("Sending: " + o.getTypeOfMessage());
 
-            ctx.channel().writeAndFlush(o);
+        ctx.channel().writeAndFlush(o);
 
 
     }
@@ -70,10 +68,9 @@ public class ClientHandler extends SimpleChannelInboundHandler<Object> {
     public void workingProcess(ChannelHandlerContext ctx) {
 
 
-
 //        /*Передача фала небольшого файл. работает - пока для теста, чтобы не потерять оставлю тут */
-    //    ObjectCreatorClass file = new ObjectCreatorClass("file", clientFolder, "txt.txt");
-     //   sendObject(file,ctx);
+        //    ObjectCreatorClass file = new ObjectCreatorClass("file", clientFolder, "txt.txt");
+        //   sendObject(file,ctx);
 
 
         //обираем список фалов и хэш клиентской папки, если не задана. если задана то можно будет сохранить все настройки сервера в фаил и оттуда брать. пока по дефолту
@@ -81,11 +78,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Object> {
 
         ObjectCreatorClass tree = new ObjectCreatorClass("tree", clientFolder, "");
 
-        sendObject(tree,ctx);
-
-
-
-
+        sendObject(tree, ctx);
 
 
     }
