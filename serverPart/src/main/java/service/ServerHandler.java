@@ -48,7 +48,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
             System.out.println("i have a tree: "/*+ o.toString()*/);
             /*сравниваем каталоги*/
             FolderSynchronizer folderSynchronizer = new FolderSynchronizer();
-            folderSynchronizer.compareTree(o);
+            sendObject(folderSynchronizer.compareTree(o), ctx);
         }
 
         if (type.equals("file")) {
@@ -79,11 +79,13 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 
 
     public void sendObject(ObjectCreatorClass o, ChannelHandlerContext ctx) {
-        System.out.println("Sending: " + o.getTypeOfMessage());
-        try {
-            ctx.channel().writeAndFlush(o).sync();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (o != null) {
+            System.out.println("Sending: " + o.getTypeOfMessage());
+            try {
+                ctx.channel().writeAndFlush(o).sync();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package services;
 
+import FilePropertyLib.FileProperty;
 import ObjectCreatorClassLib.ObjectCreatorClass;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -50,6 +51,12 @@ public class ClientHandler extends SimpleChannelInboundHandler<Object> {
 
         if (type.equals("giveMeFiles")) {
             System.out.println("We must send some files to server");
+          //  System.out.println(o.getFileList());
+            for (FileProperty o1 :o.getFileList() ) {
+                System.out.println(o1.getPath());
+                   ObjectCreatorClass file = new ObjectCreatorClass("file", "", o1.getPath());
+                   sendObject(file,ctx);
+            }
         }
 
 

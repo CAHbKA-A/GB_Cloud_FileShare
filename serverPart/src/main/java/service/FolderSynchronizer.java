@@ -16,7 +16,7 @@ import static java.lang.Thread.sleep;
 
 public class FolderSynchronizer {
 
-    public void compareTree(ObjectCreatorClass treeOnClient) {
+    public ObjectCreatorClass compareTree(ObjectCreatorClass treeOnClient) {
         // todo как то продумать что делать, если клиент зашел с разных ПК. если ервый раз, то все выкачиваем клиенту, есои не первый раз, то пока не ясно что считать актуальным каталогом
         /*сканируем папки и файлы на сервере*/
         String clientFolder = "CLIENT_FOLDER";
@@ -31,7 +31,7 @@ public class FolderSynchronizer {
 
         if (treeOnClient.equals(treeOnServer)) {
             System.out.println("Folders are same");
-            return;
+            return null;
         }
         System.out.println("folders are different/ let's synchronize");
 
@@ -58,7 +58,7 @@ public class FolderSynchronizer {
 
         if (serverFileList.equals(clientFileList)) {
             System.out.println("Files are same");
-            return;
+            return null;
         }
         System.out.println("files are different/ let's synchronize");
 
@@ -74,14 +74,20 @@ public class FolderSynchronizer {
 
         /*проверим список недотающих*/
 //        for (FileProperty fileProperty : differentList) {
-//            System.out.println(fileProperty.getName())
+//            System.out.println(fileProperty.getName());
 //        }
 
 
         /*просим клиента отпроавить недостающие файлы*/
-        ObjectCreatorClass giveMeFiles = new ObjectCreatorClass("giveMeFiles", null, null);
+
+        //напихали в список
+        ObjectCreatorClass giveMeFiles = new ObjectCreatorClass("giveMeFiles", differentList);
         giveMeFiles.setTotalFiles(differentList.size());
         giveMeFiles.setFileList(differentList);
+
+
+        return giveMeFiles;
+
         /*список на удаление*/
 
 
