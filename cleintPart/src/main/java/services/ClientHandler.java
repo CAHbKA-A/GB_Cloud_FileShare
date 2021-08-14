@@ -1,6 +1,5 @@
 package services;
 
-import FilePropertyLib.FileProperty;
 import ObjectCreatorClassLib.ObjectCreatorClass;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -9,17 +8,17 @@ import io.netty.channel.SimpleChannelInboundHandler;
 public class ClientHandler extends SimpleChannelInboundHandler<Object> {
     private String token;
     private String clientFolder = "CLIENT_FOLDER";
-MessageProcessing messageProcessing = new MessageProcessing();
+    MessageProcessing messageProcessing = new MessageProcessing();
+
     public String getToken() {
         return token;
     }
-;
+
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //авторизуемся
         sendObject(new ObjectCreatorClass("auth", "A", "A"), ctx);
-
 
     }
 
@@ -30,14 +29,13 @@ MessageProcessing messageProcessing = new MessageProcessing();
         String type = objectCreatorClass.getTypeOfMessage();
         System.out.println(type + " received");
         messageProcessing.messageProcessor(type, objectCreatorClass, ctx);
-      //  messageProcessor(type, objectCreatorClass, ctx);
+        //  messageProcessor(type, objectCreatorClass, ctx);
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Object o) throws Exception {
 
     }
-
 
 
     public void sendObject(ObjectCreatorClass o, ChannelHandlerContext ctx) {
