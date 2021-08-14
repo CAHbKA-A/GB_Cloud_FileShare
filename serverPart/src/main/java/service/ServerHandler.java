@@ -98,7 +98,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
             fos.write(filePrepare.getFileBin());//записали
             //исправляем дату послднего измененя (ставим как у клиента)
             fileА.setLastModified(filePrepare.getLastModify());
-            System.out.println(filePrepare.getLastModify());
+        //    System.out.println(filePrepare.getLastModify());
             fos.close();
         } catch (IOException e) {
             e.printStackTrace();
