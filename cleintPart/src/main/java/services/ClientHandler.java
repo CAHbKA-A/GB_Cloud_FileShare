@@ -5,9 +5,11 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 
+
 public class ClientHandler extends SimpleChannelInboundHandler<Object> {
     private String token;
     private String clientFolder = "CLIENT_FOLDER";
+    private boolean handlerIsBusy;
     MessageProcessing messageProcessing = new MessageProcessing();
 
     public String getToken() {
@@ -28,8 +30,8 @@ public class ClientHandler extends SimpleChannelInboundHandler<Object> {
         ObjectCreatorClass objectCreatorClass = (ObjectCreatorClass) msg;
         String type = objectCreatorClass.getTypeOfMessage();
         System.out.println(type + " received");
-        messageProcessing.messageProcessor(type, objectCreatorClass, ctx);
-        //  messageProcessor(type, objectCreatorClass, ctx);
+        messageProcessing.messageProcessor(type, objectCreatorClass, ctx,this);
+
     }
 
     @Override
@@ -41,19 +43,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<Object> {
     public void sendObject(ObjectCreatorClass o, ChannelHandlerContext ctx) {
         System.out.println("Sending: " + o.getTypeOfMessage());
         ctx.channel().writeAndFlush(o);
-    }
-
-
-    public void workingProcess(ChannelHandlerContext ctx) {
-
-        //обираем список фалов и хэш клиентской папки, если не задана. если задана то можно будет сохранить все настройки сервера в фаил и оттуда брать. пока по дефолту
-        /*создаем струтуру каталогов клиента*/
-
-        ObjectCreatorClass tree = new ObjectCreatorClass("tree", clientFolder, "");
-        sendObject(tree, ctx);
-
-        //мониторим папки
-        //Thread fileWatcherThread  =;
     }
 
 }

@@ -5,11 +5,6 @@ import ObjectCreatorClassLib.ObjectCreatorClass;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 
 
@@ -43,7 +38,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 
 
     void messageProcessor(String type, ObjectCreatorClass o, ChannelHandlerContext ctx) {
-        if (type.equals("auth")) authentication(o.getMessage(), ctx);
+        if (type.equals("auth")) AuthenticationService.authentication(o.getMessage(), ctx);
         if (type.equals("tree")) {
             System.out.println("i have a tree: "/*+ o.toString()*/);
             /*сравниваем каталоги*/
@@ -53,28 +48,9 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 
         if (type.equals("file")) {
             System.out.println("i have a file:" + o.getFileName() + " .Size:" + o.getFileSize());
-            saveAsFile(o);
+            FileProcessing.saveAsFile(o);
         }
 
-    }
-
-
-    void authentication(String inputMessage, ChannelHandlerContext ctx) {
-
-        String[] parts = inputMessage.split(" ");
-        if (parts.length == 3) {
-            String nick = (AuthenticationService.authenticationAlgorithm(parts[1], parts[2]));
-            if (!nick.equals("")) {
-                String token = "12";// todo генератор токенов с записю в бд
-                ObjectCreatorClass o_aut = new ObjectCreatorClass("auth_res", token, "Authorization success");
-                sendObject(o_aut, ctx);
-                System.out.println(nick + " : authorization success");
-            } else {
-                sendObject(new ObjectCreatorClass("auth_res", "0", "/Wrong login or password"), ctx);
-                System.out.println(" Wrong login or password.");
-
-            }
-        }
     }
 
 
@@ -87,24 +63,6 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
                 e.printStackTrace();
             }
         }
-    }
-
-
-    private static void saveAsFile(ObjectCreatorClass filePrepare) {
-
-        try {
-            File fileА = new File(String.valueOf("SERVER_FOLDER/" + filePrepare.getFileName()));
-            FileOutputStream fos = new FileOutputStream(fileА);
-            fos.write(filePrepare.getFileBin());//записали
-            //исправляем дату послднего измененя (ставим как у клиента)
-            fileА.setLastModified(filePrepare.getLastModify());
-        //    System.out.println(filePrepare.getLastModify());
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
     }
 
 

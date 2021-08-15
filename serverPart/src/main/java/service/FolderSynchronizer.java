@@ -77,7 +77,6 @@ public class FolderSynchronizer {
 //            System.out.println(fileProperty.getName());
 //        }
 
-
         /*просим клиента отпроавить недостающие файлы*/
 
         //напихали в список
