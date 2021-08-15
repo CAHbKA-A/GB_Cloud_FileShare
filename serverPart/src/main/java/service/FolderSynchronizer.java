@@ -55,6 +55,7 @@ public class FolderSynchronizer {
         List<FileProperty> serverFileList = treeOnServer.getFileList();
         List<FileProperty> clientFileList = treeOnClient.getFileList();
         List<FileProperty> differentList = new ArrayList<>(clientFileList);
+        List<FileProperty> deleteList = new ArrayList<>(serverFileList);
 
         if (serverFileList.equals(clientFileList)) {
             System.out.println("Files are same");
@@ -67,8 +68,12 @@ public class FolderSynchronizer {
 
         for (FileProperty clientFile : clientFileList) {
             for (FileProperty serverFile : serverFileList) {
-                if (serverFile.equals(clientFile)) differentList.remove(serverFile);//если такой есть, удаляем из списка
-                //    System.out.println(serverFileList.contains(clientFile)); не подходит - разны пути
+                if (serverFile.equals(clientFile)) {
+                    differentList.remove(serverFile);//если такой есть, удаляем из списка
+                    deleteList.remove(serverFile);//если такой есть, удаляем из списка
+                    //    System.out.println(serverFileList.contains(clientFile)); не подходит - разные пути расположения фалов
+                }
+
             }
         }
 
@@ -83,6 +88,19 @@ public class FolderSynchronizer {
         ObjectCreatorClass giveMeFiles = new ObjectCreatorClass("giveMeFiles", differentList);
         giveMeFiles.setTotalFiles(differentList.size());
         giveMeFiles.setFileList(differentList);
+
+
+
+        /*удаляем файлы, коотрых нет у клиента*/
+FileProcessing.deleteFile(deleteList);
+
+
+
+
+
+
+
+
 
 
         return giveMeFiles;
