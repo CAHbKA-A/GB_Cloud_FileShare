@@ -17,7 +17,7 @@ import static java.lang.Thread.sleep;
 public class FolderSynchronizer {
 
     public ObjectCreatorClass compareTree(ObjectCreatorClass treeOnClient) {
-        // todo как то продумать что делать, если клиент зашел с разных ПК. если ервый раз, то все выкачиваем клиенту, есои не первый раз, то пока не ясно что считать актуальным каталогом
+        // todo как то продумать что делать, если клиент зашел с разных ПК. если первый раз, то все выкачиваем клиенту, если не первый раз, то пока не ясно что считать актуальным каталогом
         /*сканируем папки и файлы на сервере*/
         String clientFolder = "CLIENT_FOLDER";
         try {
@@ -58,7 +58,7 @@ public class FolderSynchronizer {
         List<FileProperty> deleteList = new ArrayList<>(serverFileList);
 
         if (serverFileList.equals(clientFileList)) {
-            System.out.println("Files are same");
+            System.out.println("FolderSynchronizer say:Files are same");
             return null;
         }
         System.out.println("files are different/ let's synchronize");
@@ -92,15 +92,7 @@ public class FolderSynchronizer {
 
 
         /*удаляем файлы, коотрых нет у клиента*/
-FileProcessing.deleteFile(deleteList);
-
-
-
-
-
-
-
-
+        FileProcessing.deleteFile(deleteList);
 
 
         return giveMeFiles;

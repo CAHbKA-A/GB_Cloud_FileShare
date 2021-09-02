@@ -27,6 +27,8 @@ class FileWatcher extends Thread {
 
         System.out.println("Watcher started");
         WatchService watchService = null;
+
+
         try {
             watchService = FileSystems.getDefault().newWatchService();
             Path path = Paths.get(clientFolder);
@@ -35,12 +37,12 @@ class FileWatcher extends Thread {
                 WatchKey take = watchService.take();
                 for (WatchEvent event : take.pollEvents()) {
                     System.out.println("Event kind:" + event.kind() + " filename: " + event.context());
-                    sleep(1000);//отсрачиваем запуск синхры
+                    sleep(10000);//отсрачиваем запуск синхры
                     /*сканируем папку заново*/
                     ObjectCreatorClass tree = new ObjectCreatorClass("tree", "CLIENT_FOLDER", "");
                     /*отправляем обновленное дерево*/
-                   // ClientHandler clientHandler = new ClientHandler();
-                    clientHandler.sendObject(tree, ctx);
+                    ClientHandler clientHandler = new ClientHandler();
+                  clientHandler.sendObject(tree, ctx);
                     break;
 
                     //
@@ -48,6 +50,7 @@ class FileWatcher extends Thread {
 
                 }
                 take.reset();
+                break;
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

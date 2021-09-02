@@ -12,6 +12,7 @@ public class MessageProcessing {
 
     void messageProcessor(String type, ObjectCreatorClass o, ChannelHandlerContext ctx,ClientHandler clientHandler ) {
       //  ClientHandler clientHandler = new ClientHandler();
+        //обрабатываем результат авторизации
         if (type.equals("auth_res")) {
             if (o.getMessage().equals("Authorization success")) {
                 System.out.println("Authorization success, we have token = " + o.getToken());
@@ -20,7 +21,7 @@ public class MessageProcessing {
             } else
                 System.out.println("Authorization failure");
         }
-
+//  обрабатываем списое недостающих на сервере файов
         if (type.equals("giveMeFiles")) {
             System.out.println("We must send some files to server");
 
@@ -37,10 +38,28 @@ public class MessageProcessing {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
+
+
+
             //мониторим папки
             Thread threadFileWatcher = new FileWatcher("CLIENT_FOLDER", ctx,clientHandler);
             threadFileWatcher.start();
 
         }
+//если папки одинаковые, то запускаем вочер папки у клиента
+        if (type.equals("foldersAreSame")) {
+            System.out.println("Folders are synchronized!!!");
+
+
+
+            //мониторим папки
+            Thread threadFileWatcher = new FileWatcher("CLIENT_FOLDER", ctx,clientHandler);
+            threadFileWatcher.start();
+
+        }
+
+
+
     }
 }

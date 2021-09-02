@@ -47,7 +47,7 @@ public class ClientConsole {
                         public void initChannel(SocketChannel socketChannel) {
                             ChannelPipeline pipeline = socketChannel.pipeline();
                             pipeline.addLast(
-                                    new LengthFieldBasedFrameDecoder(1024 * 1024, 0, 4, 0, 4),
+                                    new LengthFieldBasedFrameDecoder(1024 * 1024*1024, 0, 4, 0, 4),
                                     new LengthFieldPrepender(4),
                                     new ObjectEncoder(),
                                     new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
