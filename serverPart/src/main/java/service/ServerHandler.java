@@ -40,7 +40,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
     void messageProcessor(String type, ObjectCreatorClass o, ChannelHandlerContext ctx) {
         if (type.equals("auth")) AuthenticationService.authentication(o.getMessage(), ctx);
         if (type.equals("tree")) {
-            System.out.println("i have a tree: "/*+ o.toString()*/);
+           // System.out.println("i have a tree: "/*+ o.toString()*/);
             /*сравниваем каталоги*/
             FolderSynchronizer folderSynchronizer = new FolderSynchronizer();
             ObjectCreatorClass o1=folderSynchronizer.compareTree(o);
@@ -48,7 +48,6 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
             sendObject(o1, ctx);}
             else
                 {
-                    System.out.println("111");
                 ObjectCreatorClass foldersSame = new ObjectCreatorClass("foldersAreSame", null, null);
                 sendObject(foldersSame,ctx);
 

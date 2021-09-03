@@ -25,79 +25,92 @@ public class FolderSynchronizer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        //сканируем папку на сервере
         ObjectCreatorClass treeOnServer = new ObjectCreatorClass("tree", "SERVER_FOLDER/" + clientFolder, "");
-        //  System.out.println("Remote folder Size = "+ treeOnClient.getClientFolderSize()+"   Local Folder Size = "+treeOnServer.getClientFolderSize());
-        // System.out.println("Remote folder Hash = "+ treeOnClient.getClientFolderHash()+"   Local Folder Size = "+treeOnServer.getClientFolderHash());
 
         if (treeOnClient.equals(treeOnServer)) {
-            System.out.println("Folders are same");
+            System.out.println("Folders and Files are same");
             return null;
         }
-        System.out.println("folders are different/ let's synchronize");
+        System.out.println("Let's synchronize the folders and folders");
 
         /*строим струтуру каталогов*/
-        List<String> remoteDirectoryList = treeOnClient.getDirectoryList();
-        for (String s : remoteDirectoryList) {
-            //  System.out.println(s);
-            Path path = Paths.get("SERVER_FOLDER/" + s);
-            if (!Files.exists(path)) {
-                try {
-                    Files.createDirectory(path);
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+        /*сравниваем папкм*/
+
+        List<String> remoteDirectoryList = treeOnClient.getDirectoryList();//список папок у клиента
+        List<String> serverDirectoryList = treeOnServer.getDirectoryList();//список папок на сервере
+        List<String> deleteFolderList = new ArrayList<>(serverDirectoryList);//что лишнее на сервере
+
+        /*Сравниваем папки*/
+        for (String clientFolderOne : remoteDirectoryList) {
+            for (String serverFolderOne : serverDirectoryList) {
+                if (serverFolderOne.equals("SERVER_FOLDER\\" + clientFolderOne)) {
+                    deleteFolderList.remove(serverFolderOne);//если у клиента есть такая я же папка как и на сервере,  (не будем удалять)
+                } else {
+                    //если такая папка есть у клиента, но нет на сервере, создаем
+                    Path path = Paths.get("SERVER_FOLDER/" + clientFolderOne);
+                    if (!Files.exists(path)) {
+                        try {
+                            Files.createDirectory(path);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
-
         }
+
+        // System.out.println("for delete " + deleteFolderList);
+
+        /*удаляем папки, которых уже нет у клиента*/
+        FileProcessing.deleteFolders(deleteFolderList);
         System.out.println("Folders synchronized");
 
+
         /*сравниваем файлы*/
-        List<FileProperty> serverFileList = treeOnServer.getFileList();
-        List<FileProperty> clientFileList = treeOnClient.getFileList();
-        List<FileProperty> differentList = new ArrayList<>(clientFileList);
-        List<FileProperty> deleteList = new ArrayList<>(serverFileList);
+        List<FileProperty> serverFileList = treeOnServer.getFileList();//список фалов на сервере
+        List<FileProperty> clientFileList = treeOnClient.getFileList();//список файлов у клиента
+        List<FileProperty> differentList = new ArrayList<>(clientFileList);//чего не хаватет на сервере
+        List<FileProperty> deleteList = new ArrayList<>(serverFileList);//что лишнее на сервере
 
         if (serverFileList.equals(clientFileList)) {
-            System.out.println("FolderSynchronizer say:Files are same");
+            //  System.out.println("FolderSynchronizer say:Files are same");
             return null;
         }
         System.out.println("files are different/ let's synchronize");
 
 
-        /*составляем список фалов, которые клинет должен отправить. пока без удаления*/
+        /*составляем список фалов, которые клинет должен отправить. */
 
         for (FileProperty clientFile : clientFileList) {
             for (FileProperty serverFile : serverFileList) {
                 if (serverFile.equals(clientFile)) {
-                    differentList.remove(serverFile);//если такой есть, удаляем из списка
-                    deleteList.remove(serverFile);//если такой есть, удаляем из списка
-                    //    System.out.println(serverFileList.contains(clientFile)); не подходит - разные пути расположения фалов
+                    /*Берем список файлов у клиента.если такой фаил есть на сервере и у клиента, удаляем из списка. Его отправлять на сервер не надо.
+                     в списке остануться только файлы, которых не хватает на сервере*/
+                    differentList.remove(serverFile);
+
+                    /*Берем список фалов на сервере. Если такой фаил есть на сервере и у клиента, удаляем из списка. .
+                    // в списке остануться только файлы, которые лишние на сервере*/
+                    deleteList.remove(serverFile);
+                    //    System.out.println(serverFileList.contains(clientFile)); не подходит - разные пути расположения файлов
                 }
 
             }
         }
 
-        /*проверим список недотающих*/
-//        for (FileProperty fileProperty : differentList) {
-//            System.out.println(fileProperty.getName());
-//        }
-
         /*просим клиента отпроавить недостающие файлы*/
 
-        //напихали в список
-        ObjectCreatorClass giveMeFiles = new ObjectCreatorClass("giveMeFiles", differentList);
+        ObjectCreatorClass giveMeFiles = new ObjectCreatorClass("giveMeFiles", differentList); //напихали в список
         giveMeFiles.setTotalFiles(differentList.size());
         giveMeFiles.setFileList(differentList);
 
-
-
         /*удаляем файлы, коотрых нет у клиента*/
-        FileProcessing.deleteFile(deleteList);
+        FileProcessing.deleteFiles(deleteList);
+        System.out.println("Files synchronized");
 
-
-        return giveMeFiles;
-
-        /*список на удаление*/
+        return giveMeFiles; //возвращаем список фалов которые клиент должен отправить
 
 
     }

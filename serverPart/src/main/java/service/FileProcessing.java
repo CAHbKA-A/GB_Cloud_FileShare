@@ -6,9 +6,8 @@ import ObjectCreatorClassLib.ObjectCreatorClass;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
 public class FileProcessing {
@@ -31,20 +30,59 @@ public class FileProcessing {
 
     }
 
-    public static void deleteFile(List<FileProperty> fileList) {
+    public static void deleteFiles(List<FileProperty> fileList) {
         if (fileList.size() > 0) {
             for (FileProperty file : fileList) {
                 Path path = Paths.get(file.getPath());
-                System.out.println(file.getPath() + " deleted!");
+                //    System.out.println(file.getPath() + " deleted!");
                 try {
-                    Files.delete(path);
+                    Files.deleteIfExists(path);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //  e.printStackTrace();
                 }
 
             }
             System.out.println("Files deleted!");
         }
     }
+
+    public static void deleteFolders(List<String> deleteFolderList) {
+        if (deleteFolderList.size() > 0) {
+            for (String sFolder : deleteFolderList) {
+                Path path = Paths.get(sFolder);
+                // System.out.println("deleting"+path);
+                deleteSubFolders(path);
+            }
+        }
+    }
+
+
+    public static void deleteSubFolders(Path rootPath) {
+
+        try {
+            Files.walkFileTree(rootPath, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                        throws IOException {
+                    //  System.out.println("delete file: " + file.toString());
+                    Files.delete(file);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws
+                        IOException {
+                    Files.delete(dir);
+                    //  System.out.println("delete dir: " + dir.toString());
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            //  e.printStackTrace();
+        }
+
+
+    }
+
 
 }

@@ -31,7 +31,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Object> {
         String type = objectCreatorClass.getTypeOfMessage();
         System.out.println(type + " received");
         messageProcessing.messageProcessor(type, objectCreatorClass, ctx,this);
-
+        System.out.println("<<<<>>>>");
     }
 
     @Override
