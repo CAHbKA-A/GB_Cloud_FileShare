@@ -1,6 +1,3 @@
-
-
-import Services.ClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -9,10 +6,12 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import lib.ObjectCreatorClass;
+import services.ClientHandler;
 
 
 import java.net.Socket;
@@ -35,35 +34,7 @@ public class ClientConsole {
         // соединились.
         connection();
 
-
-
-
-
-
-
-        //  clientFolder = "CLIENT_FOLDER";
-        //обираем список фалов и хэш клиентской папки, если не задана. если задана то можно будет сохранить все настройки сервера в фаил и оттуда брать. пока по дефолту
-        //  ObjectCreator ClientFolderObj = new ObjectCreator(clientFolder);
-
-        //TODO и отправка на сервер. сначала хэша и размера дирректории, если изменилось, то переача списка фалов
-
-        //TODO тут будет запущена синхра
-
-
     }
-
-
-//    public void sendObject(ObjectCreator o) {
-//        System.out.println("Sending: " + o);
-//
-//
-//            channelFuture.channel().writeAndFlush(o);
-//
-//    }
-
-
-
-
 
 
     public void connection() {
@@ -75,8 +46,12 @@ public class ClientConsole {
                         @Override
                         public void initChannel(SocketChannel socketChannel) {
                             ChannelPipeline pipeline = socketChannel.pipeline();
-                            pipeline.addLast(new ObjectEncoder(), new ObjectDecoder(ClassResolvers.cacheDisabled(null)), new ClientHandler());
-
+                            pipeline.addLast(
+                                    new LengthFieldBasedFrameDecoder(1024 * 1024*1024, 0, 4, 0, 4),
+                                    new LengthFieldPrepender(4),
+                                    new ObjectEncoder(),
+                                    new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+                                    new ClientHandler());
                         }
                     })
                     .connect(HOST, PORT).sync()
@@ -94,8 +69,6 @@ public class ClientConsole {
     public void disconnet(NioEventLoopGroup group) {
         group.shutdownGracefully();
     }
-
-
 
 
 }
