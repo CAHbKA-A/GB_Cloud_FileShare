@@ -4,9 +4,11 @@ package service;
 
 import ObjectCreatorClassLib.ObjectCreatorClass;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 public class AuthenticationService {
-
+    private static final Logger LOGGER = LogManager.getLogger(Server.class.getName());
 
     public static String authenticationAlgorithm(String login, String pass) {
         return DataBaseService.authentication(login, pass);
@@ -27,10 +29,10 @@ public class AuthenticationService {
 
 
            serverHandler.sendObject(o_aut, ctx);
-            System.out.println(nick + " : authorization success");
+            LOGGER.info(nick + " : authorization success");
         } else {
             serverHandler.sendObject(new ObjectCreatorClass("auth_res", "0", "/Wrong login or password"), ctx);
-            System.out.println(" Wrong login or password.");
+            LOGGER.info(" Wrong login or password.");
 
         }
     }
