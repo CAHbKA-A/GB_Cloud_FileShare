@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/GB_Cloud_FileShare.iml" filepath="$PROJECT_DIR$/GB_Cloud_FileShare.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cleintPart/cleintPart.iml" filepath="$PROJECT_DIR$/cleintPart/cleintPart.iml" />
+      <module fileurl="file://$PROJECT_DIR$/serverPart/serverPart.iml" filepath="$PROJECT_DIR$/serverPart/serverPart.iml" />
+    </modules>
+  </component>
+</project>
