@@ -53,7 +53,7 @@ public class MessageProcessing {
         }
 //если папки одинаковые, то запускаем вочер папки у клиента
         if (type.equals("foldersAreSame")) {
-            System.out.println("Folders are synchronized!!!");
+            System.out.println("Folders are synchronized!!! ");
 
 
 
