@@ -2,8 +2,11 @@ package service;
 
 import FilePropertyLib.FileProperty;
 import ObjectCreatorClassLib.ObjectCreatorClass;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.*;
@@ -11,7 +14,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
 public class FileProcessing {
-
+    private static final Logger LOGGER = LogManager.getLogger(Server.class.getName());
 
     public static void saveAsFile(ObjectCreatorClass filePrepare) {
 
@@ -80,9 +83,35 @@ public class FileProcessing {
         } catch (IOException e) {
             //  e.printStackTrace();
         }
+    }
+
+
+
+
+
+    public static void saveAsBigFile(String fileName, int parts, long lastModify) {
+
+        try {
+            File fileA = new File(String.valueOf("SERVER_FOLDER/" + fileName));
+            FileOutputStream fos = new FileOutputStream(fileA);
+
+            for (int i = 0; i < parts; i++) {
+              //  System.out.println("SERVER_FOLDER/" + fileName+"_part_" + i + "         " );
+               fos.write((Files.readAllBytes(Paths.get("SERVER_FOLDER/" + fileName+"_part_" + i))));
+                Files.deleteIfExists(Paths.get("SERVER_FOLDER/" + fileName+"_part_" + i));
+                 }
+            //записали
+            //исправляем дату послднего измененя (ставим как у клиента)
+            fileA.setLastModified(lastModify);
+            //    System.out.println(filePrepare.getLastModify());
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
     }
+
 
 
 }

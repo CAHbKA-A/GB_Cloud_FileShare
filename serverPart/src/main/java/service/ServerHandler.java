@@ -40,16 +40,15 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
     void messageProcessor(String type, ObjectCreatorClass o, ChannelHandlerContext ctx) {
         if (type.equals("auth")) AuthenticationService.authentication(o.getMessage(), ctx);
         if (type.equals("tree")) {
-           // System.out.println("i have a tree: "/*+ o.toString()*/);
+            // System.out.println("i have a tree: "/*+ o.toString()*/);
             /*сравниваем каталоги*/
             FolderSynchronizer folderSynchronizer = new FolderSynchronizer();
-            ObjectCreatorClass o1=folderSynchronizer.compareTree(o);
-            if (o1 != null){
-            sendObject(o1, ctx);}
-            else
-                {
+            ObjectCreatorClass o1 = folderSynchronizer.compareTree(o);
+            if (o1 != null) {
+                sendObject(o1, ctx);
+            } else {
                 ObjectCreatorClass foldersSame = new ObjectCreatorClass("foldersAreSame", null, null);
-                sendObject(foldersSame,ctx);
+                sendObject(foldersSame, ctx);
 
             }
         }
@@ -58,6 +57,20 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
             System.out.println("i have a file:" + o.getFileName() + " .Size:" + o.getFileSize());
             FileProcessing.saveAsFile(o);
         }
+        if (type.equals("BigFileMessage")) {
+            if (o.getMessage().equals("Start")) {
+                System.out.println("Big FIle " + o.getFileName() + " will sending!!");
+            }
+            if (o.getMessage().equals("End")) {
+                System.out.println("All "+o.getTotalFiles()+" parts of Big FIle " + o.getFileName() + " relieved! lets merge.");
+                FileProcessing.saveAsBigFile(o.getFileName() ,o.getTotalFiles(), o.getLastModify());
+            }
+
+            if (o.getMessage().equals("part")) {
+                System.out.println("Receiving  part");
+            }
+        }
+
 
     }
 

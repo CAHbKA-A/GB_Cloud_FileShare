@@ -34,8 +34,11 @@ class FileWatcher extends Thread {
             Path path = Paths.get(clientFolder);
             path.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
             while (true) {
+
+
                 WatchKey take = watchService.take();
                 for (WatchEvent event : take.pollEvents()) {
+
                     System.out.println("Event kind:" + event.kind() + " filename: " + event.context());
                     sleep(10000);//отсрачиваем запуск синхры
                     /*сканируем папку заново*/

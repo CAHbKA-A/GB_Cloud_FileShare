@@ -46,6 +46,10 @@ public class MessageProcessing {
             Thread threadFileWatcher = new FileWatcher("CLIENT_FOLDER", ctx,clientHandler);
             threadFileWatcher.start();
 
+
+
+
+
         }
 //если папки одинаковые, то запускаем вочер папки у клиента
         if (type.equals("foldersAreSame")) {
@@ -62,4 +66,16 @@ public class MessageProcessing {
 
 
     }
+
+//    private void threadSynkByTime() {
+//        long timer = System.currentTimeMillis();
+//        System.out.println(System.currentTimeMillis());
+//        System.out.println(timer);
+//
+//        if (System.currentTimeMillis()-timer>= 1000){
+//
+//            ObjectCreatorClass tree = new ObjectCreatorClass("tree", "CLIENT_FOLDER", "");
+//            timer=System.currentTimeMillis();
+//        }
+//    }
 }
