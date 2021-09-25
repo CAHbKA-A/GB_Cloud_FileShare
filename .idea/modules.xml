@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../ExternalLibs/ExternalLibs.iml" filepath="$PROJECT_DIR$/../ExternalLibs/ExternalLibs.iml" />
       <module fileurl="file://$PROJECT_DIR$/GB_Cloud_FileShare.iml" filepath="$PROJECT_DIR$/GB_Cloud_FileShare.iml" />
       <module fileurl="file://$PROJECT_DIR$/cleintPart/cleintPart.iml" filepath="$PROJECT_DIR$/cleintPart/cleintPart.iml" />
       <module fileurl="file://$PROJECT_DIR$/serverPart/serverPart.iml" filepath="$PROJECT_DIR$/serverPart/serverPart.iml" />

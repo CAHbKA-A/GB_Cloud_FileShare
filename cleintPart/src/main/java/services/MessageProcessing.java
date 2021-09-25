@@ -23,12 +23,17 @@ public class MessageProcessing {
         }
 //  обрабатываем списое недостающих на сервере файов
         if (type.equals("giveMeFiles")) {
-            System.out.println("We must send some files to server");
+            System.out.println("We must send "+o.getTotalFiles() +" some files to server");
 
             /*отправляем файлы согласно списку*/
             for (FileProperty o1 : o.getFileList()) {
                 //    System.out.println(o1.getPath());
                 ObjectCreatorClass file = new ObjectCreatorClass("file", "", o1.getPath());
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 clientHandler.sendObject(file, ctx);
             }
 
