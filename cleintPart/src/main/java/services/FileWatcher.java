@@ -44,7 +44,7 @@ class FileWatcher extends Thread {
                     /*сканируем папку заново*/
                     ObjectCreatorClass tree = new ObjectCreatorClass("tree", "CLIENT_FOLDER", "");
                     /*отправляем обновленное дерево*/
-                    ClientHandler clientHandler = new ClientHandler("","");
+                    ClientHandler clientHandler = new ClientHandler();
                   clientHandler.sendObject(tree, ctx);
                     break;
 

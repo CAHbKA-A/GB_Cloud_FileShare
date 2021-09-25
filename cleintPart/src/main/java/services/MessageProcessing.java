@@ -39,7 +39,7 @@ public class MessageProcessing {
 
             System.out.println("All files sent");
             try {
-                sleep(5000);
+                sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

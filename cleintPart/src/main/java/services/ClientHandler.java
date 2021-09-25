@@ -25,6 +25,10 @@ public class ClientHandler  extends SimpleChannelInboundHandler<Object> {
        //ClientHandler clientHandler =new  clientFolder();
     }
 
+    public ClientHandler() {
+
+    }
+
     public String getToken() {
         return token;
     }

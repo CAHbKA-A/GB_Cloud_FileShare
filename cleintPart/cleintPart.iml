@@ -19,6 +19,5 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="Maven: io.netty:netty-all:4.1.66.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.example:ObjectCreatorClassLib1:1.0-SNAPSHOT" level="project" />
   </component>
 </module>
