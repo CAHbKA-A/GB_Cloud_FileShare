@@ -21,9 +21,37 @@ public class MessageProcessing {
             } else
                 System.out.println("Authorization failure");
         }
+
+
+
+
+
+        if (type.equals("file")) {
+            System.out.println("i have a file:" + o.getFileName() + " .Size:" + o.getFileSize());
+            FileProcessing.saveAsFile(o);
+        }
+        if (type.equals("BigFileMessage")) {
+            if (o.getMessage().equals("Start")) {
+                System.out.println("Big FIle " + o.getFileName() + " will sending!!");
+            }
+            if (o.getMessage().equals("End")) {
+                System.out.println("All "+o.getTotalFiles()+" parts of Big FIle " + o.getFileName() + " relieved! lets merge.");
+                FileProcessing.saveAsBigFile(o.getFileName() ,o.getTotalFiles(), o.getLastModify());
+            }
+
+            if (o.getMessage().equals("part")) {
+                System.out.println("Receiving  part");
+            }
+        }
+
+
+
+
+
+
 //  обрабатываем списое недостающих на сервере файов
         if (type.equals("giveMeFiles")) {
-            System.out.println("We must send "+o.getTotalFiles() +" some files to server");
+            System.out.println("We must send "+o.getTotalFiles() +" files to server");
 
             /*отправляем файлы согласно списку*/
             for (FileProperty o1 : o.getFileList()) {
@@ -55,6 +83,14 @@ public class MessageProcessing {
 
 
 
+
+
+
+
+
+
+
+
         }
 //если папки одинаковые, то запускаем вочер папки у клиента
         if (type.equals("foldersAreSame")) {
@@ -67,6 +103,10 @@ public class MessageProcessing {
             threadFileWatcher.start();
 
         }
+
+
+
+
 
 
 

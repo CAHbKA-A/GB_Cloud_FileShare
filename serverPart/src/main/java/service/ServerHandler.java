@@ -43,7 +43,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
             // System.out.println("i have a tree: "/*+ o.toString()*/);
             /*сравниваем каталоги*/
             FolderSynchronizer folderSynchronizer = new FolderSynchronizer();
-            ObjectCreatorClass o1 = folderSynchronizer.compareTree(o);
+            ObjectCreatorClass o1 = folderSynchronizer.compareTree(o, this,ctx);
             if (o1 != null) {
                 sendObject(o1, ctx);
             } else {

@@ -4,6 +4,7 @@ package service;
 
 import FilePropertyLib.FileProperty;
 import ObjectCreatorClassLib.ObjectCreatorClass;
+import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,7 +17,7 @@ import static java.lang.Thread.sleep;
 
 public class FolderSynchronizer {
 
-    public ObjectCreatorClass compareTree(ObjectCreatorClass treeOnClient) {
+    public ObjectCreatorClass compareTree(ObjectCreatorClass treeOnClient, ServerHandler serverHandler, ChannelHandlerContext ctx) {
         // todo как то продумать что делать, если клиент зашел с разных ПК. если первый раз, то все выкачиваем клиенту, если не первый раз, то пока не ясно что считать актуальным каталогом
         /*сканируем папки и файлы на сервере*/
         String clientFolder = "CLIENT_FOLDER";
@@ -104,12 +105,13 @@ public class FolderSynchronizer {
 
                     sendList.add(serverFile); //для отправки клиенту
                     differentList.remove(clientFile);//не запрашиваем у клиента
+                    deleteList.remove(serverFile);//не удаляем на сервере
                 }
 
             }
         }
-        System.out.println("отправить: " + sendList);
-
+    //    System.out.println("отправить: " + sendList);
+        FileProcessing.sendFilesToClient(sendList,ctx, serverHandler);
 
         /*просим клиента отпроавить недостающие файлы*/
 //if (differentList.size()!=0)
