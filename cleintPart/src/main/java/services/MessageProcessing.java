@@ -18,6 +18,13 @@ public class MessageProcessing {
                 System.out.println("Authorization success, we have token = " + o.getToken());
                 ObjectCreatorClass tree = new ObjectCreatorClass("tree", "CLIENT_FOLDER", "");
                 clientHandler.sendObject(tree, ctx);
+
+
+
+
+
+
+
             } else
                 System.out.println("Authorization failure");
         }
@@ -80,8 +87,12 @@ public class MessageProcessing {
             threadFileWatcher.start();
 
 
+            System.out.println("check");
 
 
+
+//            Thread PeriodicalCheck = new PeriodicalCheck( clientHandler,ctx);
+//            PeriodicalCheck.start();
 
 
 
@@ -101,6 +112,13 @@ public class MessageProcessing {
             //мониторим папки
             Thread threadFileWatcher = new FileWatcher("CLIENT_FOLDER", ctx,clientHandler);
             threadFileWatcher.start();
+            System.out.println("check");
+
+
+//принудительная синхра по периоду
+            Thread PeriodicalCheck = new PeriodicalCheck( clientHandler,ctx);
+            PeriodicalCheck.start();
+
 
         }
 

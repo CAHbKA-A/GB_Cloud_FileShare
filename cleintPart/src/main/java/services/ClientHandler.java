@@ -46,7 +46,7 @@ public class ClientHandler  extends SimpleChannelInboundHandler<Object> {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ObjectCreatorClass objectCreatorClass = (ObjectCreatorClass) msg;
         String type = objectCreatorClass.getTypeOfMessage();
-        System.out.println(type + " received");
+        System.out.println(type + ":message received");
         messageProcessing.messageProcessor(type, objectCreatorClass, ctx, this);
         System.out.println("<<<<>>>>");
     }
@@ -60,7 +60,7 @@ public class ClientHandler  extends SimpleChannelInboundHandler<Object> {
     public void sendObject(ObjectCreatorClass o, ChannelHandlerContext ctx) {
         //для больштих файлов
         if (o.getFileSize() >= 1040000) {
-            System.out.println("Big Size = " + o.getFileSize());
+            System.out.println("Big Size = " + o.getFileSize()+" "+Thread.currentThread().getName());
             // предупреждаем, что пойдет большой фаил
             ObjectCreatorClass overFile = new ObjectCreatorClass("BigFileMessage", "Start", o.getFileName());
             ctx.channel().writeAndFlush(overFile);
@@ -106,7 +106,7 @@ public class ClientHandler  extends SimpleChannelInboundHandler<Object> {
             ctx.channel().writeAndFlush(o);
 // для маленьких файлов
         } else {
-            System.out.println("Sending: " + o.getTypeOfMessage());
+            System.out.println("Sending: " + o.getTypeOfMessage()+" "+Thread.currentThread().getName());
 
             ctx.channel().writeAndFlush(o);
         }
