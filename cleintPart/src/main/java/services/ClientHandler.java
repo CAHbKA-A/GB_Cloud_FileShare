@@ -37,7 +37,8 @@ public class ClientHandler  extends SimpleChannelInboundHandler<Object> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //авторизуемся
-        sendObject(new ObjectCreatorClass("auth", login, password), ctx);
+        System.out.println(CryptoUtils.cript(login+password));
+        sendObject(new ObjectCreatorClass("auth", login, CryptoUtils.cript(login+password)), ctx); //пароль в зашифрованном
 
     }
 

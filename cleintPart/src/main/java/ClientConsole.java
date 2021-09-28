@@ -20,8 +20,7 @@ public class ClientConsole extends JFrame {
     private Socket socket;
     private final int PORT = 8899;
     private final String HOST = "localhost";
-    private ChannelFuture channelFuture;
-    // private String clientFolder;
+   // private ChannelFuture channelFuture;
     private JTextField loginField;
     private JPasswordField passwordField;
     private JButton loginButton;
@@ -33,6 +32,7 @@ public class ClientConsole extends JFrame {
 
     private ClientConsole() throws InterruptedException {
 
+        //GUI
          GUIClient();
 
 
