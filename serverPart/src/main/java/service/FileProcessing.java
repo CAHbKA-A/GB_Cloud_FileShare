@@ -29,7 +29,8 @@ public class FileProcessing {
             fileA.setLastModified(filePrepare.getLastModify());
             //    System.out.println(filePrepare.getLastModify());
             fos.close();
-        } catch (IOException e) {
+        //    DataBaseService.addFile(filePrepare.getFileName(),filePrepare.getLastModify());
+        } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
 

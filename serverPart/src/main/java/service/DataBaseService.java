@@ -2,13 +2,19 @@ package service;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class DataBaseService {
 
     private static final String DB_NAME = "GB_cloud";
     private static final String TABLE_USERS = "Users";
+    private static final String TABLE_SESSIONS = "session";
+
     private static Connection connection;
     private static Statement statement;
     private static PreparedStatement ps;
@@ -20,7 +26,7 @@ public class DataBaseService {
         try {
             statement = connection.createStatement();
         } catch (SQLException throwables) {
-     //       LOGGER.error("Error: Can not create statement!");
+            //       LOGGER.error("Error: Can not create statement!");
         }
 
 
@@ -49,7 +55,7 @@ public class DataBaseService {
             Class.forName("org.sqlite.JDBC");
 
         } catch (ClassNotFoundException e) {
-           LOGGER.error("Error: \"org.sqlite.JDBC\" could not load to memory!");
+            LOGGER.error("Error: \"org.sqlite.JDBC\" could not load to memory!");
         }
 
         try {
@@ -99,7 +105,7 @@ public class DataBaseService {
             }
             connection.setAutoCommit(true);
         } catch (SQLException throwables) {
-           LOGGER.error("Error of Autcommit or  prepareStatement :" + throwables);
+            LOGGER.error("Error of Autcommit or  prepareStatement :" + throwables);
         }
 
         disconnectDB();
@@ -137,5 +143,49 @@ public class DataBaseService {
         disconnectDB();
         return nickName;
     }
+
+    public static void startSession(String login, String token) {
+        connectDB();
+        String user_id = getUserID(login);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+        Date datenow = Calendar.getInstance().getTime();
+        String currentTime = format.format(datenow);
+
+
+        String session_id = CryptoUtils.cript(login + currentTime);
+
+
+        try {
+            ps = connection.prepareStatement("insert into Session (user_id, user_token,start_session_time,last_activity) values (?,?, ?, ?)");
+
+            ps.setString(1, user_id);
+        //    ps.setString(2, session_id);
+            ps.setString(2, token);
+            ps.setString(3, currentTime);
+            ps.setString(4, currentTime);
+
+            ps.execute();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        disconnectDB();
+
+    }
+
+    public static String getUserID(String login) {
+        String id="";
+        try {
+            statement = connection.createStatement();
+            String query = "select id from " + TABLE_USERS + " where Login = '" + login + "';";
+            ResultSet rs = statement.executeQuery(query);
+            id = rs.getString("id");
+        } catch (SQLException throwables) {
+            LOGGER.error("Error of executeQuery :" + throwables);
+        }
+
+        return id;
+    }
+
 
 }

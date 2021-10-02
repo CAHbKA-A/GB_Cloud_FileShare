@@ -20,11 +20,11 @@ public class PeriodicalCheck extends Thread {
         System.out.println("periodical synchronisation started");
       //  System.out.println(System.currentTimeMillis());
 
-        while (true) {
+      //  while (true) {
             try {
-                sleep(60000);
+                sleep(60*1000*10);//10 минут
             //    if (System.currentTimeMillis() - timer >= 30000) {
-                    System.out.println(timer);
+              //      System.out.println(timer);
                     System.out.println("period!!!" + " " + Thread.currentThread().getName());
                     timer = System.currentTimeMillis();
              //   }
@@ -36,8 +36,8 @@ public class PeriodicalCheck extends Thread {
             /*отправляем обновленное дерево*/
 
               clientHandler.sendObject(tree, ctx);
-              break;
-        }
+            //  break;
+      //  }
     }
 }
 

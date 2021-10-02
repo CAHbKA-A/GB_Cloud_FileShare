@@ -11,7 +11,7 @@ public class AuthenticationService {
     private static final Logger LOGGER = LogManager.getLogger(Server.class.getName());
 
     public static String authenticationAlgorithm(String login, String pass) {
-        return DataBaseService.authentication(login, pass);
+        return DataBaseService.authentication(login, CryptoUtils.cript(login+pass));
     }
 
 
@@ -24,7 +24,9 @@ public class AuthenticationService {
     {
         String nick = (AuthenticationService.authenticationAlgorithm(parts[1], parts[2]));
         if (!nick.equals("")) {
-            String token = "12";// todo генератор токенов с записю в бд
+            //токен для идентификации сессии и чтобы различать сессии, когда один пользователь зашел на нескольких ПК одновременнл
+            String token = generateToken(parts[1],nick);
+            DataBaseService.startSession(parts[1],token);
             ObjectCreatorClass o_aut = new ObjectCreatorClass("auth_res", token, "Authorization success");
 
 
@@ -36,5 +38,10 @@ public class AuthenticationService {
 
         }
     }
+}
+private static String generateToken(String login,String name){
+        String token = login+name+System.currentTimeMillis();
+        token = CryptoUtils.cript(token);
+        return token;
 }
 }

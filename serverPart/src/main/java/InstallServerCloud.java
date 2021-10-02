@@ -18,8 +18,8 @@ public class InstallServerCloud {
         DataBaseService.createUserTable();
 
         List<String[]> users = new ArrayList <>();
-        users.add(new String[]{"A", "A", "Alex"});
-        users.add(new String[]{"B", "B", "Bul"});
+        users.add(new String[]{"A", "4FA0721D67AE202D2A1DC9F0572D434D317EDD92", "Alex"});
+        users.add(new String[]{"B", "92ADEE14F4433FB5A56E4EF52159C6CFC67A7324", "Bul"});
         users.add(new String[]{"C", "C", "Carl"});
         for (int i = 1; i < 1000; i++) {
             users.add(new String[]{"A" + i, "A" + i, "Alex_" + i});
