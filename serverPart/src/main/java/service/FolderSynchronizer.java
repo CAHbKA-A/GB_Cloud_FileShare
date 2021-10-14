@@ -45,6 +45,7 @@ public class FolderSynchronizer {
         List<String> deleteFolderList = new ArrayList<>(serverDirectoryList);//что лишнее на сервере
 
         /*Сравниваем папки*/
+        //todo передалать на коллекции
         for (String clientFolderOne : remoteDirectoryList) {
             for (String serverFolderOne : serverDirectoryList) {
                 if (serverFolderOne.equals("SERVER_FOLDER\\" + clientFolderOne)) {

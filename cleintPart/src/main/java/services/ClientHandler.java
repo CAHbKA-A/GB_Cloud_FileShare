@@ -22,6 +22,8 @@ public class ClientHandler  extends SimpleChannelInboundHandler<Object> {
     public ClientHandler(String login, String password) {
         this.login = login;
         this.password = password;
+        //this.clientFolder = ConfigClass.getPats();
+        System.out.println("ClientPath "+ConfigClass.getPats());
        //ClientHandler clientHandler =new  clientFolder();
     }
 

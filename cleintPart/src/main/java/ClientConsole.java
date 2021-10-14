@@ -9,11 +9,14 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import services.ClientHandler;
+import services.ConfigClass;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.net.Socket;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ClientConsole extends JFrame {
     private Socket socket;
@@ -29,6 +32,10 @@ public class ClientConsole extends JFrame {
         //проверяем это первый запуск или нет/ просто по наличию конфига.
         File fileConfig = new File("Config.bin");
         System.out.println("First start?" + !fileConfig.exists());
+         if (!fileConfig.exists()){
+        ConfigClass configClass = new ConfigClass(null, "CLIENT FOLDER", null);
+        configClass.save(configClass);
+          }
     }
 
     private ClientConsole() throws InterruptedException {
@@ -70,6 +77,7 @@ public class ClientConsole extends JFrame {
             folderChooser.setAcceptAllFileFilterUsed(false);
             if (folderChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 folderPath.setText(String.valueOf(folderChooser.getSelectedFile()));
+
             }
 
         });
@@ -77,6 +85,7 @@ public class ClientConsole extends JFrame {
         loginButton = new JButton("Sing in");
         panel.add(loginButton);
         loginButton.addActionListener(e -> {
+            ConfigClass.reconfig(loginField.getText(), folderPath.getText(), null);
             setVisible(false);
             connection(loginField.getText(), passwordField.getText());
 
