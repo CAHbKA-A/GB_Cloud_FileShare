@@ -10,10 +10,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.xerial:sqlite-jdbc:3.34.0" level="project" />
-    <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-all:4.1.66.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.example:ExternalLibs:1.0-SNAPSHOT" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -23,5 +19,9 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Maven: org.xerial:sqlite-jdbc:3.34.0" level="project" />
+    <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-all:4.1.66.Final" level="project" />
+    <orderEntry type="module" module-name="ExternalLibs" />
   </component>
 </module>

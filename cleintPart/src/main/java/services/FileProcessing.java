@@ -1,36 +1,36 @@
-package service;
+package services;
 
 import FilePropertyLib.FileProperty;
 import ObjectCreatorClassLib.ObjectCreatorClass;
-import io.netty.channel.ChannelHandlerContext;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
-import static java.lang.Thread.sleep;
 
 public class FileProcessing {
-    private static final Logger LOGGER = LogManager.getLogger(Server.class.getName());
+
 
     public static void saveAsFile(ObjectCreatorClass filePrepare) {
 
         try {
-            File fileA = new File(String.valueOf("SERVER_FOLDER/" + filePrepare.getFileName()));
+            //подаправим путь к файлу, удалим
+            String path = String.valueOf(filePrepare.getFileName());
+         //   String[] newPath = path.split("SERVER_FOLDER/");
+            path = path.substring(14);
+            File fileA = new File(path);
+
             FileOutputStream fos = new FileOutputStream(fileA);
             fos.write(filePrepare.getFileBin());//записали
             //исправляем дату послднего измененя (ставим как у клиента)
             fileA.setLastModified(filePrepare.getLastModify());
             //    System.out.println(filePrepare.getLastModify());
             fos.close();
-        //    DataBaseService.addFile(filePrepare.getFileName(),filePrepare.getLastModify());
-        } catch (IOException | NullPointerException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -90,9 +90,6 @@ public class FileProcessing {
     }
 
 
-
-
-
     public static void saveAsBigFile(String fileName, int parts, long lastModify) {
 
         try {
@@ -100,10 +97,10 @@ public class FileProcessing {
             FileOutputStream fos = new FileOutputStream(fileA);
 
             for (int i = 0; i < parts; i++) {
-              //  System.out.println("SERVER_FOLDER/" + fileName+"_part_" + i + "         " );
-               fos.write((Files.readAllBytes(Paths.get("SERVER_FOLDER/" + fileName+"_part_" + i))));
-                Files.deleteIfExists(Paths.get("SERVER_FOLDER/" + fileName+"_part_" + i));
-                 }
+                //  System.out.println("SERVER_FOLDER/" + fileName+"_part_" + i + "         " );
+                fos.write((Files.readAllBytes(Paths.get("SERVER_FOLDER/" + fileName + "_part_" + i))));
+                Files.deleteIfExists(Paths.get("SERVER_FOLDER/" + fileName + "_part_" + i));
+            }
             //записали
             //исправляем дату послднего измененя (ставим как у клиента)
             fileA.setLastModified(lastModify);
@@ -117,27 +114,8 @@ public class FileProcessing {
     }
 
 
-    public static void sendFilesToClient(List<FileProperty> sendList, ChannelHandlerContext ctx, ServerHandler serverHandler) {
+    public static void saveTokenToFile(String token) {
 
-        System.out.println("We must send "+sendList.size() +"  files to client");
 
-        /*отправляем файлы согласно списку*/
-        for (FileProperty o1 : sendList) {
-           //     System.out.println(o1.getPath());
-            ObjectCreatorClass file = new ObjectCreatorClass("file", "", o1.getPath());
-            try {
-                sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            serverHandler.sendObject(file, ctx);
-        }
-
-        System.out.println("All files sent");
-        try {
-            sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 }

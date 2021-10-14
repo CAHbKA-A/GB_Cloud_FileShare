@@ -8,10 +8,12 @@
         <outputRelativeToContentRoot value="true" />
         <module name="serverPart" />
         <module name="cleintPart" />
+        <module name="ExternalLibs" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="cleintPart" target="1.8" />
+      <module name="ExternalLibs" target="15" />
       <module name="GB_Cloud_FileShare" target="8" />
       <module name="serverPart" target="1.8" />
     </bytecodeTargetLevel>

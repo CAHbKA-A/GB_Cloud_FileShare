@@ -4,6 +4,7 @@ package service;
 
 import FilePropertyLib.FileProperty;
 import ObjectCreatorClassLib.ObjectCreatorClass;
+import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,7 +17,7 @@ import static java.lang.Thread.sleep;
 
 public class FolderSynchronizer {
 
-    public ObjectCreatorClass compareTree(ObjectCreatorClass treeOnClient) {
+    public ObjectCreatorClass compareTree(ObjectCreatorClass treeOnClient, ServerHandler serverHandler, ChannelHandlerContext ctx) {
         // todo как то продумать что делать, если клиент зашел с разных ПК. если первый раз, то все выкачиваем клиенту, если не первый раз, то пока не ясно что считать актуальным каталогом
         /*сканируем папки и файлы на сервере*/
         String clientFolder = "CLIENT_FOLDER";
@@ -44,6 +45,7 @@ public class FolderSynchronizer {
         List<String> deleteFolderList = new ArrayList<>(serverDirectoryList);//что лишнее на сервере
 
         /*Сравниваем папки*/
+        //todo передалать на коллекции
         for (String clientFolderOne : remoteDirectoryList) {
             for (String serverFolderOne : serverDirectoryList) {
                 if (serverFolderOne.equals("SERVER_FOLDER\\" + clientFolderOne)) {
@@ -74,6 +76,7 @@ public class FolderSynchronizer {
         List<FileProperty> clientFileList = treeOnClient.getFileList();//список файлов у клиента
         List<FileProperty> differentList = new ArrayList<>(clientFileList);//чего не хаватет на сервере
         List<FileProperty> deleteList = new ArrayList<>(serverFileList);//что лишнее на сервере
+        List<FileProperty> sendList = new ArrayList<>();//что отправить клиенту
 
         if (serverFileList.equals(clientFileList)) {
             //  System.out.println("FolderSynchronizer say:Files are same");
@@ -86,25 +89,34 @@ public class FolderSynchronizer {
 
         for (FileProperty clientFile : clientFileList) {
             for (FileProperty serverFile : serverFileList) {
-                if (serverFile.equals(clientFile)) {
-                    /*Берем список файлов у клиента.если такой фаил есть на сервере и у клиента, удаляем из списка. Его отправлять на сервер не надо.
+                if (serverFile.equals(clientFile)) {// размер, имя, путь,дата
+
+                   /*Берем список файлов у клиента.если такой фаил есть на сервере и у клиента, удаляем из списка. Его отправлять на сервер не надо.
                      в списке остануться только файлы, которых не хватает на сервере*/
                     differentList.remove(serverFile);
 
-                    /*Берем список фалов на сервере. Если такой фаил есть на сервере и у клиента, удаляем из списка. .
+                         /*Берем список фалов на сервере. Если такой фаил есть на сервере и у клиента, удаляем из списка. .
                     // в списке остануться только файлы, которые лишние на сервере*/
                     deleteList.remove(serverFile);
                     //    System.out.println(serverFileList.contains(clientFile)); не подходит - разные пути расположения файлов
                 }
+                else
+                //если файлы не единтичны, а на сервере  фаил свежее, то будем отправлять клиенту.
+                if (serverFile.isEarly(clientFile)) {
+
+                    sendList.add(serverFile); //для отправки клиенту
+                    differentList.remove(clientFile);//не запрашиваем у клиента
+                    deleteList.remove(serverFile);//не удаляем на сервере
+                }
 
             }
         }
+    //    System.out.println("отправить: " + sendList);
+        FileProcessing.sendFilesToClient(sendList,ctx, serverHandler);
 
         /*просим клиента отпроавить недостающие файлы*/
-
+//if (differentList.size()!=0)
         ObjectCreatorClass giveMeFiles = new ObjectCreatorClass("giveMeFiles", differentList); //напихали в список
-        giveMeFiles.setTotalFiles(differentList.size());
-        giveMeFiles.setFileList(differentList);
 
         /*удаляем файлы, коотрых нет у клиента*/
         FileProcessing.deleteFiles(deleteList);

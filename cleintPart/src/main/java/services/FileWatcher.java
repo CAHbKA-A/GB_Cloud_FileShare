@@ -9,12 +9,12 @@ import java.nio.file.*;
 import static java.nio.file.StandardWatchEventKinds.*;
 
 
-class FileWatcher extends Thread {
+ class FileWatcher extends Thread {
 
-    public FileWatcher(String clientFolder, ChannelHandlerContext ctx,ClientHandler clientHandler) {
+    public FileWatcher(String clientFolder, ChannelHandlerContext ctx, ClientHandler clientHandler) {
         this.clientFolder = clientFolder;
         this.ctx = ctx;
-        this.clientHandler =clientHandler;
+        this.clientHandler = clientHandler;
     }
 
     private String clientFolder;
@@ -23,7 +23,7 @@ class FileWatcher extends Thread {
 
     /*будем запускать между синхонихациями каталогов*/
     @Override
-    public void start() {
+    public void run() {
 
         System.out.println("Watcher started");
         WatchService watchService = null;
@@ -39,16 +39,14 @@ class FileWatcher extends Thread {
                 WatchKey take = watchService.take();
                 for (WatchEvent event : take.pollEvents()) {
 
-                    System.out.println("Event kind:" + event.kind() + " filename: " + event.context());
+                    System.out.println("Event kind:" + event.kind() + " filename: " + event.context()+" "+Thread.currentThread().getName());
                     sleep(10000);//отсрачиваем запуск синхры
                     /*сканируем папку заново*/
                     ObjectCreatorClass tree = new ObjectCreatorClass("tree", "CLIENT_FOLDER", "");
                     /*отправляем обновленное дерево*/
-                    ClientHandler clientHandler = new ClientHandler();
-                  clientHandler.sendObject(tree, ctx);
+                   // ClientHandler clientHandler = new ClientHandler();
+                    clientHandler.sendObject(tree, ctx);
                     break;
-
-                    //
 
 
                 }
